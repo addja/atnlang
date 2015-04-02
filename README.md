@@ -1,3 +1,4 @@
 # Interpreter for ATNs #
 
-Compilers Project. 2015.
+Simple interpreted language with the purpose of executing ATNs. ATNs are used to
+recognize natural language. Compilers Project. 2015.
