@@ -42,7 +42,8 @@ prog    : utilities+ EOF -> ^(PROGRAM utilities+)
 // An utility can be a function, a variable or an atn   
 utilities   : DEF^ ID params '{'! block_instructions '}'!
             | ATN^ ID '{'! node_list '}'!
-            | assign
+            | assign ';'!
+			| funcall ';'!
             ;
 
 node_list   : node (node)+
