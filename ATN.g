@@ -22,7 +22,7 @@ tokens {
     HASHCODE;   // Especial token for the atn input pointer
     HASHTEXT;   // Especial token for the atn input pointer
     HASHBASE;   // Especial token for the atn input pointer
-    HASHFOWARD; // Especial token for the atn input pointer
+    HASHFORWARD; // Especial token for the atn input pointer
     HASHEND;    // Especial token for the atn input pointer
 }
 
@@ -36,19 +36,26 @@ package parser;
 }
 
 // A program is a list of utilities
-prog    : func+ EOF -> ^(PROGRAM func+)
+prog    : utilities+ EOF -> ^(PROGRAM utilities+)
         ;
         
 // An utility can be a function, a variable or an atn   
-utilities   : DEF^ ID params "{"! block_instructions "}"!
+utilities   : DEF^ ID params '{'! block_instructions '}'!
+            | ATN^ ID '{'! node_list '}'!
             | assign
-            | ATN^ ID "{"! node_list "}"!
             ;
 
-node_list   : (NODE^ node)+
+node_list   : node (node)+
             ;
             
-node        : (ARC^ "(" expr ")"! (instruction | "{"! block_instructions "}"!))+
+node        : NODE^ ID '{'! arc_list '}'!
+            ;
+
+arc_list    : arc (arc)+ 
+            ;
+
+arc        : ARC^ '(' expr ')'! instructions
+           ;
             
        
 // The list of parameters grouped in a subtree (it can be empty)
@@ -65,10 +72,19 @@ param   :   '&' id=ID -> ^(PREF[$id,$id.text])
         |   id=ID -> ^(PVALUE[$id,$id.text])
         ;
 
+instructions
+        :  inst_comma -> ^(LIST_INSTR inst_comma)
+        |  '{'! block_instructions '}'!
+        ;
+
 // A list of instructions, all of them gouped in a subtree
 block_instructions
-        :    instruction (instruction)+
-            -> ^(LIST_INSTR instruction+)
+        :  inst_comma (inst_comma)* 
+            -> ^(LIST_INSTR inst_comma+)
+        ;
+
+inst_comma
+        : instruction ';'!
         ;
 
 // The different types of instructions
@@ -84,32 +100,32 @@ instruction
         ;
   
 // Assignment
-assign  :   subatom eq=EQUAL expr";"! -> ^(ASSIGN[$eq,":="] subatom expr)
+assign  :   subatom eq=EQUAL expr -> ^(ASSIGN[$eq,":="] subatom expr)
         ;
         
 // if-then-else (else is optional)
-ite_stmt    :   IF^ "("! expr ")"! ("{"! block_instructions "}"! | instruction)
-                (ELSE! ("{" block_instructions "}"| instruction))?
+ite_stmt    :   IF^ '('! expr ')'! instructions
+                (ELSE! instructions)? 
             ;
 
 // while statement
-while_stmt  :   WHILE^ "("! expr ")"! ("{"! block_instructions "}"! | instruction)
+while_stmt  :   WHILE^ '('! expr ')'! instructions
             ;
             
 // for statement
-for_stmt    :   FOR^ "("! assign ";"! expr ";"! assign ")"! 
-                ("{"! block_instructions "}"! | instruction)
+for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! instructions
             ;
 
 // Return statement with an expression
-return_stmt :   RETURN^ expr?        
+return_stmt :   RETURN^ expr?   
+            ;     
         
 // Write an expression or a string
-print   :   PRINT^ (expr | STRING ) ";"!
+print   :   PRINT^ (expr | STRING )
         ;
 
 // go to an indicated atn node
-goto    :   GOTO^ ID ";"!
+goto    :   GOTO^ ID
         ;
         
 // Grammar for expressions with boolean, relational and aritmetic operators
@@ -139,18 +155,18 @@ atom    :   subatom
         |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
         |   funcall
         |   '('! expr ')'!
-        |   "#.code" -> HASHCODE
-        |   "#.base" -> HASHBASE
-        |   "#.text" -> HASHBASE
-        |   "#.forward()" -> HASHFORWARD
-        |   "#.end()" -> HASHEND
+        |   '#.code' -> HASHCODE
+        |   '#.base' -> HASHBASE
+        |   '#.text' -> HASHBASE
+        |   '#.forward()' -> HASHFORWARD
+        |   '#.end()' -> HASHEND
         ;
 
 subatom :   ID (BRACKET^ expr ']'!)?
         ;
         
 // A function call has a lits of arguments in parenthesis (possibly empty)
-funcall :   ID '(' expr_list? ')'";"! -> ^(FUNCALL ID ^(ARGLIST expr_list?))
+funcall :   ID '(' expr_list? ')' -> ^(FUNCALL ID ^(ARGLIST expr_list?))
         ;
 
 // A list of expressions separated by commas
@@ -179,6 +195,7 @@ WHILE   : 'while' ;
 FOR     : 'for' ;
 NODE    : 'node' ;
 ARC     : 'arc' ;
+ATN     : 'atn' ;
 DEF     : 'def' ;
 RETURN  : 'return' ;
 PRINT   : 'print' ;
