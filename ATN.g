@@ -24,6 +24,7 @@ tokens {
     HASHBASE;   // Especial token for the atn input pointer
     HASHFORWARD; // Especial token for the atn input pointer
     HASHEND;    // Especial token for the atn input pointer
+    ARRAYLENGTH; 
 }
 
 @header {
@@ -164,6 +165,7 @@ atom    :   subatom
         ;
 
 subatom :   ID (BRACKET^ expr ']'!)?
+		| 	ID '.length' -> ^(ARRAYLENGTH ID)
         ;
         
 // A function call has a lits of arguments in parenthesis (possibly empty)
