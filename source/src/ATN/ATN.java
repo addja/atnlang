@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package Asl;
+package ATN;
 
 // Imports for ANTLR
 import org.antlr.runtime.*;
@@ -41,13 +41,13 @@ import parser.*;
 import interp.*;
 
 /**
- * The class <code>Asl</code> implement the main function of the
+ * The class <code>ATN</code> implement the main function of the
  * interpreter. It accepts a set of options to generate the AST in
  * dot format and avoid the execution of the program. To know about
- * the accepted options, run the command Asl -help.
+ * the accepted options, run the command ATN -help.
  */
 
-public class Asl{
+public class ATN {
 
     /** The file name of the program. */
     private static String infile = null;
@@ -77,14 +77,14 @@ public class Asl{
         }
 
         // Creates the lexer
-        AslLexer lex = new AslLexer(input);
+        ATNLexer lex = new ATNLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lex);
 
         // Creates and runs the parser. As a result, an AST is created
-        AslParser parser = new AslParser(tokens);
-        AslTreeAdaptor adaptor = new AslTreeAdaptor();
+        ATNParser parser = new ATNParser(tokens);
+        ATNTreeAdaptor adaptor = new ATNTreeAdaptor();
         parser.setTreeAdaptor(adaptor);
-        AslParser.prog_return result = null;
+        ATNParser.prog_return result = null;
         try {
             result = parser.prog();
         } catch (Exception e) {} // Just catch the exception (nothing to do)
@@ -98,7 +98,7 @@ public class Asl{
         }
 
         // Get the AST
-        AslTree t = (AslTree)result.getTree();
+        ATNTree t = (ATNTree)result.getTree();
 
         // Generate a file for the AST (option -ast file)
         if (astfile != null) {
@@ -169,7 +169,7 @@ public class Asl{
         CommandLineParser clp = new GnuParser();
         CommandLine line = null;
 
-        String cmdline = "Asl [options] file";
+        String cmdline = "ATN [options] file";
         
         
         // Parse the options

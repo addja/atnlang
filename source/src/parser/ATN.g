@@ -6,7 +6,7 @@ grammar ATN;
 
 options {
     output = AST;
-    ASTLabelType = AslTree;
+    ASTLabelType = ATNTree;
 }
 
 tokens {
@@ -29,7 +29,7 @@ tokens {
 
 @header {
 package parser;
-import interp.AslTree;
+import interp.ATNTree;
 }
 
 @lexer::header {
@@ -58,7 +58,6 @@ arc_list    : arc (arc)+
 
 arc        : ARC^ '(' expr ')'! instructions
            ;
-            
        
 // The list of parameters grouped in a subtree (it can be empty)
 params  : '(' paramlist? ')' -> ^(PARAMS paramlist?)
@@ -97,6 +96,7 @@ instruction
         |   for_stmt        // for statement
         |   funcall         // Call to a procedure (no result produced)
         |   return_stmt     // Return statement
+        |   jump            // arc goto 
         |   print           // Write a string or an expression
         |                   // Nothing
         ;
@@ -127,7 +127,7 @@ print   :   PRINT^ (expr | STRING )
         ;
 
 // go to an indicated atn node
-goto    :   GOTO^ ID
+jump    :   JUMP^ ID
         ;
         
 // Grammar for expressions with boolean, relational and aritmetic operators
@@ -202,7 +202,7 @@ ATN     : 'atn' ;
 DEF     : 'def' ;
 RETURN  : 'return' ;
 PRINT   : 'print' ;
-GOTO    : 'goto' ;
+JUMP    : 'goto' ;
 TRUE    : 'true' ;
 FALSE   : 'false';
 ID      :   ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
