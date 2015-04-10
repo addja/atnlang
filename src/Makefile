@@ -1,4 +1,4 @@
-TARGET =	Atn
+TARGET =	ATN
 
 # Directories
 ROOT =		$(PWD)
@@ -66,7 +66,7 @@ exec:
 	if [ ! -e $(BIN) ]; then\
 	  mkdir $(BIN);\
 	fi
-	echo "Main-Class: Atn.Atn" > $(MANIFEST)
+	echo "Main-Class: ATN.ATN" > $(MANIFEST)
 	echo "Class-Path: $(JARPATH)" >> $(MANIFEST)
 	cd $(CLASSDIR); jar -cmf $(MANIFEST) $(JARFILE) *
 	printf "#!/bin/sh\n\n" > $(EXEC)
