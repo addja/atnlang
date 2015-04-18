@@ -11,10 +11,11 @@ package interp;
  */
 
 import parser.*;
+import java.util.ArrayList; 
 
 public class Data {
     /** Types of data */
-    public enum Type {VOID, BOOLEAN, INTEGER;}
+    public enum Type {VOID, BOOLEAN, INTEGER, ARRAY;}
 
     /** Type of data*/
     private Type type;
@@ -22,6 +23,12 @@ public class Data {
     /** Value of the data */
     private int value; 
 
+    /** Type of the Array **/
+    private Type arrayType;
+
+    /** Array containing the data **/
+    private ArrayList<Integer> array;
+    
     /** Constructor for integers */
     Data(int v) { type = Type.INTEGER; value = v; }
 
@@ -29,13 +36,40 @@ public class Data {
     Data(boolean b) { type = Type.BOOLEAN; value = b ? 1 : 0; }
 
     /** Constructor for void data */
-    Data() {type = Type.VOID; }
+    Data() { type = Type.VOID; }
 
+    /** Constructor for arrays of Integers */
+    Data(int index, int v) {
+        type = Type.ARRAY;
+        arrayType = Type.INTEGER;
+        array = new ArrayList<Integer>();
+        for (int i = 0; i < index; ++i) array.add(0);
+        array.add(v);
+    }
+
+    /** Constructor for arrays of booleans */
+    Data(int index, boolean v) {
+        type = Type.ARRAY;
+        arrayType = Type.BOOLEAN;
+        array = new ArrayList<Integer>();
+        for (int i = 0; i < index; ++i) array.add(0);
+        array.add(v ? 1: 0);
+    }
+    
     /** Copy constructor */
-    Data(Data d) { type = d.type; value = d.value; }
+    Data(Data d) { 
+        type = d.type; 
+        value = d.value; 
+        if (d.array == null) array = null;
+        else array = new ArrayList<Integer>(d.array);
+        arrayType = d.arrayType;
+    }
 
     /** Returns the type of data */
     public Type getType() { return type; }
+
+    /** Returns if the array is a boolean or integer array **/
+    public Type getArrayType(){ return arrayType; }
 
     /** Indicates whether the data is Boolean */
     public boolean isBoolean() { return type == Type.BOOLEAN; }
@@ -45,6 +79,18 @@ public class Data {
 
     /** Indicates whether the data is void */
     public boolean isVoid() { return type == Type.VOID; }
+    
+    /** Indicates whether the data is an array */
+    public boolean isArray() { return type == Type.ARRAY; }
+
+    /** Indicates whether the data is a boolean array */
+    public boolean isBooleanArray() { return arrayType == Type.BOOLEAN; }
+
+    /** Indicates whether the data is a boolean array */
+    public boolean isIntegerArray() { return arrayType == Type.INTEGER; }
+
+    /** Returns the size of the array contained **/
+    public int getArraySize(){ return array.size(); }
 
     /**
      * Gets the value of an integer data. The method asserts that
@@ -64,19 +110,85 @@ public class Data {
         return value == 1;
     }
 
+    /**
+     * Gets the boolean value of a boolean Array. The method asserts that
+     * the array is a boolean array.
+     */
+    public boolean getBooleanArrayValue(int index) {
+        assert type == Type.ARRAY;
+        assert arrayType == Type.BOOLEAN;
+        int v = array.get(index);
+        return v == 1;
+    }
+
+    /**
+     * Gets the integer value of an integer Array. The method asserts that
+     * the array is an integer array.
+     */
+    public int getIntegerArrayValue(int index) {
+        assert type == Type.ARRAY;
+        assert arrayType == Type.INTEGER;
+        int v = array.get(index);
+        return v;
+    }
+
     /** Defines a Boolean value for the data */
     public void setValue(boolean b) { type = Type.BOOLEAN; value = b ? 1 : 0; }
 
     /** Defines an integer value for the data */
     public void setValue(int v) { type = Type.INTEGER; value = v; }
 
+    /** Adds nulls elements to the array to ensure the array has
+        capacity to hold the element marked by the index x **/
+    private void ensureArrayCapacity(int x) {
+        if (x >= array.size()) {
+            for (int i = array.size(); i <= x; ++i)
+                array.add(0);
+        }
+    }
+
+    /** Defines an integer value for the data array */
+    public void setValue(int index, int v) { 
+        assert type == Type.ARRAY;
+        assert arrayType == Type.INTEGER;
+        ensureArrayCapacity(index);
+        array.set(index,v);
+    }
+    
+    /** Defines a boolean value for the data array */
+    public void setValue(int index, boolean b) { 
+        assert type == Type.ARRAY;
+        assert arrayType == Type.BOOLEAN;
+        ensureArrayCapacity(index);
+        array.set(index,b? 1:0);
+    }
+
     /** Copies the value from another data */
-    public void setData(Data d) { type = d.type; value = d.value; }
+    public void setData(Data d) { 
+        type = d.type; 
+        value = d.value; 
+        arrayType = d.arrayType;
+        if (d.array == null) array = null;
+        else array = new ArrayList<Integer>(d.array);
+    }
     
     /** Returns a string representing the data in textual form. */
     public String toString() {
         if (type == Type.BOOLEAN) return value == 1 ? "true" : "false";
-        return Integer.toString(value);
+        else if (type == Type.ARRAY) {
+            String s = "[";
+            boolean first = true;
+            for (int x:array) {
+                if (first) first = false;
+                else s+=',';
+                if (arrayType == Type.INTEGER)
+                    s += Integer.toString(x);
+                else s += x > 0 ? "true" : "false";
+            }
+            s += "]\n";
+            return s;
+        }
+        else return Integer.toString(value);
     }
     
     /**

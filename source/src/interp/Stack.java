@@ -69,6 +69,39 @@ public class Stack {
         else d.setData(value); // Use the previous data 
     }
 
+
+    /** Defines the value of an array variable. If the array does not
+     * exist, it is created with null slots. If it exists, the value and type of
+     * the variable are re-defined.
+     * @param name The name of the variable
+     * @param value The value of the variable
+     * @param index The index in which the value must be assigned in the array
+     */
+    public void defineArrayVariable(String name, Data value, int index) {
+        Data d = CurrentAR.get(name);
+        if (d == null) {
+            Data array;
+            if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
+            else array = new Data(index,value.getIntegerValue());
+            CurrentAR.put(name, array); 
+        }
+        else {
+            if (value.isBoolean() && d.isIntegerArray()) {
+                Data newarr = new Data(index,value.getBooleanValue());
+                d.setData(newarr);
+            }
+            else if (value.isInteger() && d.isBooleanArray()) {
+                Data newarr = new Data(index,value.getIntegerValue());
+                d.setData(newarr);
+            }
+            else { // same type of data
+                if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
+                else d.setValue(index,value.getIntegerValue());
+            }
+        }
+    }
+
+
     /** Gets the value of the variable. The value is represented as
      * a Data object. In this way, any modification of the object
      * implicitly modifies the value of the variable.
