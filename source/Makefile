@@ -83,9 +83,21 @@ tests:
 		echo $$f ; \
 		echo "AST\tTrace\tOutput" ; \
 		$(EXEC) $$f -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out ; \
-		diff -bB $$f.ast $(TEMPDIR)/temp.ast; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 1; fi ; \
-		diff -bB $$f.trace $(TEMPDIR)/temp.trace; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 2; fi ; \
-		diff -bB $$f.out $(TEMPDIR)/temp.out; if [ $$? -eq 0 ] ; then printf "OK\n" ; else printf "FAIL\n"; exit 3; fi ; \
+		diff -bB $$f.ast $(TEMPDIR)/temp.ast; \
+		if [ $$? -eq 0 ] ; then \
+			printf "OK\t" ; \
+			else printf "FAIL\t" && exit 1; \
+		fi ; \
+		diff -bB $$f.trace $(TEMPDIR)/temp.trace; \
+		if [ $$? -eq 0 ] ; then \
+			printf "OK\t" ; \
+			else printf "FAIL\t" && exit 2; \
+		fi ; \
+		diff -bB $$f.out $(TEMPDIR)/temp.out; \
+		if [ $$? -eq 0 ] ; then \
+			printf "OK\n" ; \
+			else printf "FAIL\n" && exit 3; \
+		fi ; \
 	done
 
 clean:

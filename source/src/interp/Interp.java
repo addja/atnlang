@@ -529,7 +529,6 @@ public class Interp {
             ATNTree p = pars.getChild(i); // Parameters of the callee
             ATNTree a = args.getChild(i); // Arguments passed by the caller
             setLineNumber(a);
-
             if (p.getType() == ATNLexer.PVALUE) {
                 // Pass by value: evaluate the expression
                 Params.add(i,evaluateExpression(a));
@@ -543,7 +542,6 @@ public class Interp {
                 Params.add(i,v);
             }
         }
-
         return Params;
     }
 
