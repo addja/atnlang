@@ -1,8 +1,10 @@
 b = "adeu! %n";
+c = 22;
 
 def printer(a) {
 	print a;
 	print b;
+	print c;
 }
 
 def main() {

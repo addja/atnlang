@@ -45,9 +45,9 @@ public class Interp {
      */
     public Interp(ATNTree T, String tracefile) {
         assert T != null;
-        MapFunctions(T);  // Creates the table to map function names into AST nodes
-        PreProcessAST(T); // Some internal pre-processing ot the AST
         Stack = new Stack(); // Creates the memory of the virtual machine
+        ParseProgram(T);  // Creates the table to map function names into AST nodes
+        PreProcessAST(T); // Some internal pre-processing ot the AST
         // Initializes the standard input of the program
         
         /** TODO: input extention
@@ -83,7 +83,7 @@ public class Interp {
      * Gathers information from the AST and creates the map from
      * function names to the corresponding AST nodes.
      */
-    private void MapFunctions(ATNTree T) {
+    private void ParseProgram(ATNTree T) {
         assert T != null && T.getType() == ATNLexer.PROGRAM;
         FuncName2Tree = new HashMap<String,ATNTree> ();
         int n = T.getChildCount();

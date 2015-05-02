@@ -20,7 +20,7 @@ public class Stack {
     private HashMap<String,Data> CurrentAR = null;
 
     /** Global variable hasmap */
-    private HashMap<String,Data> Global = null;
+    private HashMap<String,Data> Global;
 
     /**
      * Class to represent an item of the Stack trace.
