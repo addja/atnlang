@@ -204,8 +204,11 @@ public class Data {
         capacity to hold the element marked by the index x **/
     private void ensureArrayCapacity(int x) {
         if (x >= array.size()) {
-            for (int i = array.size(); i <= x; ++i)
-                array.add("");
+            for (int i = array.size(); i <= x; ++i) {
+                if (arrayType == Type.STRING)
+                    array.add("");
+                else array.add("0");
+            }
         }
     }
 
