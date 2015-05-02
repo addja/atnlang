@@ -47,7 +47,7 @@ public class Data {
     Data(String s) { 
         type = Type.STRING; 
         arrayType = Type.VOID;
-        value = s; 
+        value = new String(s); 
     }    
 
     /** Constructor for void data */
