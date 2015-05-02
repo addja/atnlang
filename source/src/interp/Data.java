@@ -15,54 +15,78 @@ import java.util.ArrayList;
 
 public class Data {
     /** Types of data */
-    public enum Type {VOID, BOOLEAN, INTEGER, ARRAY;}
+    public enum Type {VOID, BOOLEAN, INTEGER, ARRAY, STRING;}
 
     /** Type of data*/
     private Type type;
 
     /** Value of the data */
-    private int value; 
+    private String value;   
 
     /** Type of the Array **/
     private Type arrayType;
 
     /** Array containing the data **/
-    private ArrayList<Integer> array;
+    private ArrayList<String> array;
     
     /** Constructor for integers */
-    Data(int v) { type = Type.INTEGER; value = v; }
+    Data(int v) { 
+        type = Type.INTEGER; 
+        arrayType = Type.VOID;
+        value = String.valueOf(v); 
+    }
 
     /** Constructor for Booleans */
-    Data(boolean b) { type = Type.BOOLEAN; value = b ? 1 : 0; }
+    Data(boolean b) { 
+        type = Type.BOOLEAN; 
+        arrayType = Type.VOID;
+        value = String.valueOf(b ? 1 : 0);
+    }
+
+    /** Constructor for Booleans */
+    Data(String s) { 
+        type = Type.STRING; 
+        arrayType = Type.VOID;
+        value = s; 
+    }    
 
     /** Constructor for void data */
-    Data() { type = Type.VOID; }
+    Data() { type = Type.VOID; arrayType = Type.VOID;}
 
     /** Constructor for arrays of Integers */
     Data(int index, int v) {
         type = Type.ARRAY;
         arrayType = Type.INTEGER;
-        array = new ArrayList<Integer>();
-        for (int i = 0; i < index; ++i) array.add(0);
-        array.add(v);
+        array = new ArrayList<String>();
+        for (int i = 0; i < index; ++i) array.add("0");
+        array.add(String.valueOf(v));
     }
 
     /** Constructor for arrays of booleans */
     Data(int index, boolean v) {
         type = Type.ARRAY;
         arrayType = Type.BOOLEAN;
-        array = new ArrayList<Integer>();
-        for (int i = 0; i < index; ++i) array.add(0);
-        array.add(v ? 1: 0);
+        array = new ArrayList<String>();
+        for (int i = 0; i < index; ++i) array.add("0");
+        array.add(String.valueOf(v ? 1 : 0));
+    }
+
+    /** Constructor for arrays of strings */
+    Data(int index, String v) {
+        type = Type.ARRAY;
+        arrayType = Type.STRING;
+        array = new ArrayList<String>();
+        for (int i = 0; i < index; ++i) array.add("");
+        array.add(v);
     }
     
     /** Copy constructor */
     Data(Data d) { 
-        type = d.type; 
-        value = d.value; 
-        if (d.array == null) array = null;
-        else array = new ArrayList<Integer>(d.array);
+        type = d.type;
         arrayType = d.arrayType;
+        value = d.value; 
+        if (arrayType == Type.VOID) array = null;
+        else array = new ArrayList<String>(d.array);
     }
 
     /** Returns the type of data */
@@ -83,14 +107,23 @@ public class Data {
     /** Indicates whether the data is an array */
     public boolean isArray() { return type == Type.ARRAY; }
 
+    /** Indicates whether the data is a string */
+    public boolean isString() { return type == Type.STRING; }
+
     /** Indicates whether the data is a boolean array */
     public boolean isBooleanArray() { return arrayType == Type.BOOLEAN; }
 
     /** Indicates whether the data is a boolean array */
     public boolean isIntegerArray() { return arrayType == Type.INTEGER; }
 
+    /** Indicates whether the data is a boolean array */
+    public boolean isStringArray() { return arrayType == Type.STRING; }
+
     /** Returns the size of the array contained **/
-    public int getArraySize(){ return array.size(); }
+    public int getArraySize(){ 
+        if (array == null) return 0;
+        return array.size(); 
+    }
 
     /**
      * Gets the value of an integer data. The method asserts that
@@ -98,7 +131,7 @@ public class Data {
      */
     public int getIntegerValue() {
         assert type == Type.INTEGER;
-        return value;
+        return Integer.parseInt(value);
     }
 
     /**
@@ -107,7 +140,16 @@ public class Data {
      */
     public boolean getBooleanValue() {
         assert type == Type.BOOLEAN;
-        return value == 1;
+        return value.equals("1");
+    }
+
+    /**
+     * Gets the value of a String data. The method asserts that
+     * the data is a String.
+     */
+    public String getStringValue() {
+        assert type == Type.STRING;
+        return value;
     }
 
     /**
@@ -117,8 +159,7 @@ public class Data {
     public boolean getBooleanArrayValue(int index) {
         assert type == Type.ARRAY;
         assert arrayType == Type.BOOLEAN;
-        int v = array.get(index);
-        return v == 1;
+        return array.get(index).equals("1");
     }
 
     /**
@@ -128,22 +169,43 @@ public class Data {
     public int getIntegerArrayValue(int index) {
         assert type == Type.ARRAY;
         assert arrayType == Type.INTEGER;
-        int v = array.get(index);
-        return v;
+        return Integer.parseInt(array.get(index));
+    }
+
+    /**
+     * Gets the String value of an String Array. The method asserts that
+     * the array is an String array.
+     */
+    public String getStringArrayValue(int index) {
+        assert type == Type.ARRAY;
+        assert arrayType == Type.STRING;
+        return array.get(index);
     }
 
     /** Defines a Boolean value for the data */
-    public void setValue(boolean b) { type = Type.BOOLEAN; value = b ? 1 : 0; }
+    public void setValue(boolean b) { 
+        type = Type.BOOLEAN; 
+        value = String.valueOf(b ? 1 : 0); 
+    }
 
     /** Defines an integer value for the data */
-    public void setValue(int v) { type = Type.INTEGER; value = v; }
+    public void setValue(int v) { 
+        type = Type.INTEGER; 
+        value = String.valueOf(v);
+    }
+
+    /** Defines an integer value for the data */
+    public void setValue(String s) { 
+        type = Type.STRING;
+        value = s;
+    }
 
     /** Adds nulls elements to the array to ensure the array has
         capacity to hold the element marked by the index x **/
     private void ensureArrayCapacity(int x) {
         if (x >= array.size()) {
             for (int i = array.size(); i <= x; ++i)
-                array.add(0);
+                array.add("");
         }
     }
 
@@ -152,7 +214,7 @@ public class Data {
         assert type == Type.ARRAY;
         assert arrayType == Type.INTEGER;
         ensureArrayCapacity(index);
-        array.set(index,v);
+        array.set(index,String.valueOf(v));
     }
     
     /** Defines a boolean value for the data array */
@@ -160,7 +222,15 @@ public class Data {
         assert type == Type.ARRAY;
         assert arrayType == Type.BOOLEAN;
         ensureArrayCapacity(index);
-        array.set(index,b? 1:0);
+        array.set(index,String.valueOf(b ? 1:0));
+    }
+
+    /** Defines a boolean value for the data array */
+    public void setValue(int index, String s) { 
+        assert type == Type.ARRAY;
+        assert arrayType == Type.STRING;
+        ensureArrayCapacity(index);
+        array.set(index,s);
     }
 
     /** Copies the value from another data */
@@ -168,27 +238,27 @@ public class Data {
         type = d.type; 
         value = d.value; 
         arrayType = d.arrayType;
-        if (d.array == null) array = null;
-        else array = new ArrayList<Integer>(d.array);
+        if (arrayType == Type.VOID) array = null;
+        else array = new ArrayList<String>(d.array);
     }
     
     /** Returns a string representing the data in textual form. */
     public String toString() {
-        if (type == Type.BOOLEAN) return value == 1 ? "true" : "false";
+        if (type == Type.BOOLEAN) return value.equals("1") ? "true" : "false";
         else if (type == Type.ARRAY) {
             String s = "[";
             boolean first = true;
-            for (int x:array) {
+            for (String x:array) {
                 if (first) first = false;
-                else s+=',';
-                if (arrayType == Type.INTEGER)
-                    s += Integer.toString(x);
-                else s += x > 0 ? "true" : "false";
+                else s += ',';
+                if (arrayType == Type.BOOLEAN)
+                    s += x.equals("1") ? "true" : "false";
+                else s += x;
             }
             s += "]\n";
             return s;
         }
-        else return Integer.toString(value);
+        else return value;
     }
     
     /**
@@ -196,7 +266,7 @@ public class Data {
      * the value is zero.
      */
     private void checkDivZero(Data d) {
-        if (d.value == 0) throw new RuntimeException ("Division by zero");
+        if (d.value.equals("0")) throw new RuntimeException ("Division by zero");
     }
 
     /**
@@ -205,17 +275,18 @@ public class Data {
      * @param op Type of operator (token).
      * @param d Second operand.
      */
-     
     public void evaluateArithmetic (int op, Data d) {
         assert type == Type.INTEGER && d.type == Type.INTEGER;
+        int r = d.getIntegerValue(), temp = this.getIntegerValue();
         switch (op) {
-            case ATNLexer.PLUS: value += d.value; break;
-            case ATNLexer.MINUS: value -= d.value; break;
-            case ATNLexer.MUL: value *= d.value; break;
-            case ATNLexer.DIV: checkDivZero(d); value /= d.value; break;
-            case ATNLexer.MOD: checkDivZero(d); value %= d.value; break;
+            case ATNLexer.PLUS: temp += r; break;
+            case ATNLexer.MINUS: temp -= r; break;
+            case ATNLexer.MUL: temp *= r; break;
+            case ATNLexer.DIV: checkDivZero(d); temp /= r; break;
+            case ATNLexer.MOD: checkDivZero(d); temp %= r; break;
             default: assert false;
         }
+        value = String.valueOf(temp);
     }
 
     /**
@@ -227,12 +298,36 @@ public class Data {
     public Data evaluateRelational (int op, Data d) {
         assert type != Type.VOID && type == d.type;
         switch (op) {
-            case ATNLexer.EQUAL: return new Data(value == d.value);
-            case ATNLexer.NOT_EQUAL: return new Data(value != d.value);
-            case ATNLexer.LT: return new Data(value < d.value);
-            case ATNLexer.LE: return new Data(value <= d.value);
-            case ATNLexer.GT: return new Data(value > d.value);
-            case ATNLexer.GE: return new Data(value >= d.value);
+            case ATNLexer.EQUAL: return new Data(value.equals(d.value));
+            case ATNLexer.NOT_EQUAL: return new Data(!value.equals(d.value));
+            case ATNLexer.LT: 
+                if (type == Type.INTEGER) 
+                    return new Data(this.getIntegerValue() < d.getIntegerValue());
+                else if (type == Type.BOOLEAN)
+                    throw new RuntimeException("Cannot compare with '<' two booleans");
+                else return new Data(value.compareTo(d.value) < 0);
+
+            case ATNLexer.LE: 
+                if (type == Type.INTEGER) 
+                    return new Data(this.getIntegerValue() <= d.getIntegerValue());
+                else if (type == Type.BOOLEAN)
+                    throw new RuntimeException("Cannot compare with '<=' two booleans");
+                else return new Data(value.compareTo(d.value) <= 0);
+            
+            case ATNLexer.GT: 
+                if (type == Type.INTEGER) 
+                    return new Data(this.getIntegerValue() > d.getIntegerValue());
+                else if (type == Type.BOOLEAN)
+                    throw new RuntimeException("Cannot compare with '>' two booleans");
+                else return new Data(value.compareTo(d.value) > 0);
+            
+            case ATNLexer.GE: 
+                if (type == Type.INTEGER) 
+                    return new Data(this.getIntegerValue() >= d.getIntegerValue());
+                else if (type == Type.BOOLEAN)
+                    throw new RuntimeException("Cannot compare with '>=' two booleans");
+                else return new Data(value.compareTo(d.value) >= 0);
+
             default: assert false; 
         }
         return null;
