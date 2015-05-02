@@ -46,8 +46,8 @@ public class Interp {
     public Interp(ATNTree T, String tracefile) {
         assert T != null;
         Stack = new Stack(); // Creates the memory of the virtual machine
-        ParseProgram(T);  // Creates the table to map function names into AST nodes
         PreProcessAST(T); // Some internal pre-processing ot the AST
+        ParseProgram(T);  // Creates the table to map function names into AST nodes
         // Initializes the standard input of the program
         
         /** TODO: input extention
