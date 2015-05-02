@@ -112,21 +112,24 @@ public class Stack {
         if (d == null) {
             Data array;
             if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
-            else array = new Data(index,value.getIntegerValue());
+            else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
+            else array = new Data(index,value.getStringValue());
             CurrentAR.put(name, array); 
         }
         else {
-            if (value.isBoolean() && d.isIntegerArray()) {
-                Data newarr = new Data(index,value.getBooleanValue());
-                d.setData(newarr);
-            }
-            else if (value.isInteger() && d.isBooleanArray()) {
-                Data newarr = new Data(index,value.getIntegerValue());
+            if (d.getArrayType() != value.getType()){
+                Data newarr;
+                if (value.isBoolean())
+                    newarr = new Data(index, value.getBooleanValue());
+                else if (value.isInteger())
+                    newarr = new Data(index, value.getIntegerValue());
+                else newarr = new Data(index, value.getStringValue());
                 d.setData(newarr);
             }
             else { // same type of data
                 if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
-                else d.setValue(index,value.getIntegerValue());
+                else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
+                else d.setValue(index,value.getStringValue());
             }
         }
     }
