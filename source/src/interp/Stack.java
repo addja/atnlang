@@ -19,6 +19,9 @@ public class Stack {
     /** Reference to the current activation record */
     private HashMap<String,Data> CurrentAR = null;
 
+    /** Global variable hasmap */
+    private HashMap<String,Data> Global = null;
+
     /**
      * Class to represent an item of the Stack trace.
      * For each function call, the function name and
@@ -34,12 +37,17 @@ public class Stack {
 
     /** Stack trace to keep track of function calls */
     private LinkedList<StackTraceItem> StackTrace;
+
+    /** Stack trace to keep track of atn arc calls */
+    private LinkedList<StackTraceItem> StackTraceATN;
     
     /** Constructor of the memory */
     public Stack() {
         Stack = new LinkedList<HashMap<String,Data>>();
         CurrentAR = null;
         StackTrace = new LinkedList<StackTraceItem>();
+        StackTraceATN = new LinkedList<StackTraceItem>();
+        Global = new HashMap<String,Data>();
     }
 
     /** Creates a new activation record on the top of the stack */
@@ -49,12 +57,22 @@ public class Stack {
         StackTrace.addLast (new StackTraceItem(name, line));
     }
 
+    /** Creates a new ecord for arc called on the atn */
+    public void pushArc(String name, int line) {
+        StackTraceATN.addLast (new StackTraceItem(name, line));
+    }
+
     /** Destroys the current activation record */
     public void popActivationRecord() {
         Stack.removeLast();
         if (Stack.isEmpty()) CurrentAR = null;
         else CurrentAR = Stack.getLast();
         StackTrace.removeLast();
+    }
+
+    /** Destroys the current atn arcs record */
+    public void popArcs() {
+        StackTraceATN = new LinkedList<StackTraceItem>();
     }
 
     /** Defines the value of a variable. If the variable does not
@@ -66,6 +84,18 @@ public class Stack {
     public void defineVariable(String name, Data value) {
         Data d = CurrentAR.get(name);
         if (d == null) CurrentAR.put(name, value); // New definition
+        else d.setData(value); // Use the previous data 
+    }
+
+    /** Defines the value of a global variable. If the variable does not
+     * exist, it is created. If it exists, the value and type of
+     * the variable are re-defined.
+     * @param name The name of the variable
+     * @param value The value of the variable
+     */
+    public void defineVariableGlobal(String name, Data value) {
+        Data d = Global.get(name);
+        if (d == null) Global.put(name, value); // New definition
         else d.setData(value); // Use the previous data 
     }
 
@@ -112,9 +142,12 @@ public class Stack {
      * @return The value of the variable
      */
     public Data getVariable(String name) {
-        Data v = CurrentAR.get(name);
+        Data v = Global.get(name);
         if (v == null) {
-            throw new RuntimeException ("Variable " + name + " not defined");
+            v = CurrentAR.get(name);
+            if (v == null) {
+                throw new RuntimeException ("Variable " + name + " not defined");
+            }
         }
         return v;
     }
@@ -169,5 +202,28 @@ public class Stack {
         }
         return trace.toString();
     } 
+
+    /**
+     * Generates a string with the contents of the atn trace.
+     * Each line contains a node name and the line number where
+     * the next arc is followed. Finally, the line number in
+     * the current node is written.
+     * @param current_line program line executed when this function
+     *        is called.
+     * @return A string with the contents of the atn trace.
+     */ 
+    public String getAtnTrace(int current_line) {
+        int size = StackTraceATN.size();
+        ListIterator<StackTraceItem> itr = StackTraceATN.listIterator(size);
+        StringBuffer trace = new StringBuffer("---------------%n| Atn trace |%n---------------%n");
+        trace.append("** Depth = ").append(size).append("%n");
+        while (itr.hasPrevious()) {
+            StackTraceItem it = itr.previous();
+            trace.append("|> ").append(it.fname).append(": line ").append(current_line).append("%n");
+            current_line = it.line;
+        }
+        return trace.toString();
+    }
+
 }
     
