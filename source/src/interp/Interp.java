@@ -107,7 +107,6 @@ public class Interp {
                         Stack.defineArrayVariableGlobal(id, value, index);
                     }
                     Stack.defineVariableGlobal(f.getChild(0).getText(), value);
-                    System.out.println("hiiiii");
                     break;
 
                 case ATNLexer.ATN:
