@@ -78,12 +78,12 @@ public class Interp {
      * function names to the corresponding AST nodes.
      */
     private void MapFunctions(ATNTree T) {
-        assert T != null && T.getType() == ATNLexer.LIST_FUNCTIONS;
+        assert T != null && T.getType() == ATNLexer.PROGRAM;
         FuncName2Tree = new HashMap<String,ATNTree> ();
         int n = T.getChildCount();
         for (int i = 0; i < n; ++i) {
             ATNTree f = T.getChild(i);
-            assert f.getType() == ATNLexer.FUNC;
+            assert f.getType() == ATNLexer.DEF;
             String fname = f.getChild(0).getText();
             if (FuncName2Tree.containsKey(fname)) {
                 throw new RuntimeException("Multiple definitions of function " + fname);
@@ -240,6 +240,7 @@ public class Interp {
                 }
                 return new Data(); // No expression: returns void data
 
+            /*  
             // Read statement: reads a variable and raises an exception
             // in case of a format error.
             case ATNLexer.READ:
@@ -253,9 +254,10 @@ public class Interp {
                 }
                 Stack.defineVariable (t.getChild(0).getText(), val);
                 return null;
+            */
 
             // Write statement: it can write an expression or a string.
-            case ATNLexer.WRITE:
+            case ATNLexer.PRINT:
                 ATNTree v = t.getChild(0);
                 // Special case for strings
                 if (v.getType() == ATNLexer.STRING) {

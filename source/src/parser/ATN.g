@@ -54,7 +54,7 @@ node        : NODE^ ID ('{'! arc_list '}'! | ACCEPT ';'!)
 arc_list    : arc (arc)+ 
             ;
 
-arc        : ARC^ '(' expr ')'! JUMP ID instructions 
+arc        : ARC^ '(' expr ')'! JUMP ID instructions
            ;
        
 // The list of parameters grouped in a subtree (it can be empty)
@@ -93,6 +93,7 @@ instruction
         |   while_stmt      // while statement
         |   for_stmt        // for statement
         |   funcall         // Call to a procedure (no result produced)
+        |   return_stmt     // Return statement
         |   print           // Write a string or an expression
         |                   // Nothing
         ;
@@ -116,6 +117,11 @@ for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! instructions
 
 // Write an expression or a string
 print   :   PRINT^ (expr | STRING )
+        ;
+
+//Return of a value in a function
+return_stmt
+        :  RETURN^ expr?
         ;
         
 // Grammar for expressions with boolean, relational and aritmetic operators
@@ -187,6 +193,7 @@ ARC     : 'arc' ;
 ATN     : 'atn' ;
 DEF     : 'def' ;
 ACCEPT  : 'accept' ;
+RETURN  : 'return' ;
 PRINT   : 'print' ;
 JUMP    : 'goto' ;
 TRUE    : 'true' ;
