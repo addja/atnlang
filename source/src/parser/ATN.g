@@ -22,8 +22,6 @@ tokens {
     HASHCODE;   // Especial token for the atn input pointer
     HASHTEXT;   // Especial token for the atn input pointer
     HASHBASE;   // Especial token for the atn input pointer
-    HASHFORWARD; // Especial token for the atn input pointer
-    HASHEND;    // Especial token for the atn input pointer
     ARRAYLENGTH; 
 }
 
@@ -159,9 +157,7 @@ atom    :   subatom
         |   '('! expr ')'!
         |   '#.code' -> HASHCODE
         |   '#.base' -> HASHBASE
-        |   '#.text' -> HASHBASE
-        |   '#.forward()' -> HASHFORWARD
-        |   '#.end()' -> HASHEND
+        |   '#.text' -> HASHTEXT
         ;
 
 subatom :   ID (BRACKET^ expr ']'!)?
