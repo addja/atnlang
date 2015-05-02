@@ -80,13 +80,13 @@ exec:
 #move and uncomment next line to generate compared files
 #$(EXEC) $< -ast $<.ast -trace $<.trace > $<.out 
 tests: $(TESTS_SRC)
-	$(EXEC) $< -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out
-	diff -bB $<.ast $(TEMPDIR)/temp.ast > $(TEMPDIR)/diff_result
-	test ! -s $(TEMPDIR)/diff_result
-	diff -bB $<.trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/diff_result
-	test ! -s $(TEMPDIR)/diff_result
-	diff -bB $<.out $(TEMPDIR)/temp.out > $(TEMPDIR)/diff_result
-	test ! -s $(TEMPDIR)/diff_result
+	@echo ""
+	@echo $<
+	@echo "AST\tTrace\tOutput"
+	@$(EXEC) $< -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out
+	@diff -bB $<.ast $(TEMPDIR)/temp.ast; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 1; fi
+	@diff -bB $<.trace $(TEMPDIR)/temp.trace; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 2; fi
+	@diff -bB $<.out $(TEMPDIR)/temp.out; if [ $$? -eq 0 ] ; then printf "OK\n" ; else printf "FAIL\n"; exit 3; fi
 
 clean:
 	rm -rf $(PARSER)/*.java $(PARSER)/*.tokens 
@@ -96,3 +96,5 @@ clean:
 
 tar: clean
 	cd ..; tar cvzf $(DISTRIB) $(TARGET); mv $(DISTRIB) $(TARGET); cd $(TARGET) 
+
+.PHONY: all clean tar tests docs exec
