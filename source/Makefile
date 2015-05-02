@@ -10,6 +10,8 @@ PARSER =	$(SRCDIR)/parser
 INTERP =	$(SRCDIR)/interp
 JAVADOC =	$(ROOT)/javadoc
 BIN =		$(ROOT)/bin
+TEST = 		$(ROOT)/test
+TEMPDIR :=	$(shell mktemp -d)
 
 # Executable
 EXEC = 		$(BIN)/$(TARGET)
@@ -50,7 +52,9 @@ INTERP_SRC =	$(INTERP)/Interp.java \
 
 ALL_SRC =		$(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 
-all: compile exec docs
+TESTS_SRC = 	$(wildcard $(TEST)/*.atn)
+
+all: compile exec docs tests
 
 compile:
 	java -jar $(LIB_ANTLR) -o $(PARSER) $(GRAMMAR)
@@ -72,6 +76,17 @@ exec:
 	printf "#!/bin/sh\n\n" > $(EXEC)
 	printf 'exec java -enableassertions -jar $(JARFILE) "$$@"' >> $(EXEC)
 	chmod a+x $(EXEC)
+
+#move and uncomment next line to generate compared files
+#$(EXEC) $< -ast $<.ast -trace $<.trace > $<.out 
+tests: $(TESTS_SRC)
+	$(EXEC) $< -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out
+	diff -bB $<.ast $(TEMPDIR)/temp.ast > $(TEMPDIR)/diff_result
+	test ! -s $(TEMPDIR)/diff_result
+	diff -bB $<.trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/diff_result
+	test ! -s $(TEMPDIR)/diff_result
+	diff -bB $<.out $(TEMPDIR)/temp.out > $(TEMPDIR)/diff_result
+	test ! -s $(TEMPDIR)/diff_result
 
 clean:
 	rm -rf $(PARSER)/*.java $(PARSER)/*.tokens 

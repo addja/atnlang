@@ -1,0 +1,4 @@
+main() <entry point>
+|   printer(a=hola! %n) <line 11>
+|   return <line 7>
+return <line 7>
