@@ -21,8 +21,11 @@ public class Interp {
      */
     private HashMap<String,ATNTree> FuncName2Tree;
 
-    /** Standard input of the interpreter (System.in). */
-    private Scanner stdin;
+    /**
+    * // TODO input extention
+    * // Standard input of the interpreter (System.in).
+    * private Scanner stdin;
+    */
 
     /**
      * Stores the line number of the current statement.
@@ -46,7 +49,10 @@ public class Interp {
         PreProcessAST(T); // Some internal pre-processing ot the AST
         Stack = new Stack(); // Creates the memory of the virtual machine
         // Initializes the standard input of the program
-        stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
+        
+        /** TODO: input extention
+        * stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
+        */
         if (tracefile != null) {
             try {
                 trace = new PrintWriter(new FileWriter(tracefile));
@@ -83,6 +89,7 @@ public class Interp {
         int n = T.getChildCount();
         for (int i = 0; i < n; ++i) {
             ATNTree f = T.getChild(i);
+            // NEED: switch def / atn and global var declaration
             assert f.getType() == ATNLexer.DEF;
             String fname = f.getChild(0).getText();
             if (FuncName2Tree.containsKey(fname)) {
@@ -172,6 +179,8 @@ public class Interp {
         return result;
     }
 
+    // NEED: execute ATN with the stack.pushArc() and popArc() with one pushactivationrecord and popactivationrecord
+
     /**
      * Executes a block of instructions. The block is terminated
      * as soon as an instruction returns a non-null result.
@@ -206,6 +215,7 @@ public class Interp {
         Data value; // The returned value
 
         // A big switch for all type of instructions
+        // NEEDED: add ATN
         switch (t.getType()) {
 
             // Assignment
@@ -297,6 +307,7 @@ public class Interp {
 
         Data value = null;
         // Atoms
+        // NEED: add atn
         switch (type) {
             // A variable
             case ATNLexer.ID:
@@ -366,6 +377,7 @@ public class Interp {
                 break;
 
             // Arithmetic operators
+            // NEEDED plus add strings
             case ATNLexer.PLUS:
             case ATNLexer.MINUS:
             case ATNLexer.MUL:
