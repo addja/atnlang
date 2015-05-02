@@ -89,13 +89,34 @@ public class Interp {
         int n = T.getChildCount();
         for (int i = 0; i < n; ++i) {
             ATNTree f = T.getChild(i);
-            // NEED: switch def / atn and global var declaration
-            assert f.getType() == ATNLexer.DEF;
-            String fname = f.getChild(0).getText();
-            if (FuncName2Tree.containsKey(fname)) {
-                throw new RuntimeException("Multiple definitions of function " + fname);
+            // TODO: switch atn and global
+            switch(f.getType()) {
+                case ATNLexer.DEF:
+                    String fname = f.getChild(0).getText();
+                    if (FuncName2Tree.containsKey(fname)) {
+                        throw new RuntimeException("Multiple definitions of function " + fname);
+                    }
+                    FuncName2Tree.put(fname, f);
+                    break;
+
+                case ATNLexer.ASSIGN:
+                    value = evaluateExpression(t.getChild(1));
+                    if (t.getChild(0).getType() == ATNLexer.BRACKET) {
+                        String id = t.getChild(0).getChild(0).getText();
+                        int index = t.getChild(0).getChild(1).getIntValue();
+                        Stack.defineArrayVariableGlobal(id, value, index);
+                    }
+                    Stack.defineVariableGlobal(t.getChild(0).getText(), value);
+                    break;
+
+                case ATNLexer.ATN:
+                    // TODO implemnent
+                    break;
+
+                default:
+                    throw new RuntimeException("Incorrect declaration");
+                    break;
             }
-            FuncName2Tree.put(fname, f);
         } 
     }
 
@@ -179,7 +200,7 @@ public class Interp {
         return result;
     }
 
-    // NEED: execute ATN with the stack.pushArc() and popArc() with one pushactivationrecord and popactivationrecord
+    // TODO: execute ATN with the stack.pushArc() and popArc() with one pushactivationrecord and popactivationrecord
 
     /**
      * Executes a block of instructions. The block is terminated
@@ -215,7 +236,7 @@ public class Interp {
         Data value; // The returned value
 
         // A big switch for all type of instructions
-        // NEEDED: add ATN
+        // TODOED: add ATN
         switch (t.getType()) {
 
             // Assignment
@@ -307,7 +328,7 @@ public class Interp {
 
         Data value = null;
         // Atoms
-        // NEED: add atn
+        // TODO: add atn
         switch (type) {
             // A variable
             case ATNLexer.ID:
