@@ -100,13 +100,13 @@ public class Interp {
                     break;
 
                 case ATNLexer.ASSIGN:
-                    value = evaluateExpression(t.getChild(1));
-                    if (t.getChild(0).getType() == ATNLexer.BRACKET) {
-                        String id = t.getChild(0).getChild(0).getText();
-                        int index = t.getChild(0).getChild(1).getIntValue();
+                    Data value = evaluateExpression(f.getChild(1));
+                    if (f.getChild(0).getType() == ATNLexer.BRACKET) {
+                        String id = f.getChild(0).getChild(0).getText();
+                        int index = f.getChild(0).getChild(1).getIntValue();
                         Stack.defineArrayVariableGlobal(id, value, index);
                     }
-                    Stack.defineVariableGlobal(t.getChild(0).getText(), value);
+                    Stack.defineVariableGlobal(f.getChild(0).getText(), value);
                     break;
 
                 case ATNLexer.ATN:
@@ -115,7 +115,6 @@ public class Interp {
 
                 default:
                     throw new RuntimeException("Incorrect declaration");
-                    break;
             }
         } 
     }
