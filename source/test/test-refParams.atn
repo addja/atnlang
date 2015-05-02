@@ -1,0 +1,42 @@
+def main() {
+	a[4] = 1;
+    write_nl(a);
+	a[2] = 3;
+	write_nl(a);
+	a[5] = 5;
+	write_nl(a);
+	a[3] = true;
+	write_nl(a);
+	b[3] = 2;
+	a = b;
+	write_nl(a);
+	c = wolo();
+	write_nl(c);
+	d[4] = 2;
+	test(d);
+	write_nl(d);
+	e = array(3);
+	write_nl(e);
+}
+
+def test (&w) {
+ 	write_nl(w);
+	w[3] = 2;
+ 	write_nl(w);
+	return;
+}
+ 
+def write_nl(a) {
+	print a;
+	print "%n";
+}
+ 
+def wolo() {
+	a[3] = 5;
+	return a[3];
+}
+
+def array(x) {
+	a[5] = "hello!";
+	return a;	
+}

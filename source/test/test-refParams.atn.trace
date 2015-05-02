@@ -1,0 +1,28 @@
+main() <entry point>
+|   write_nl(a=[0,0,0,0,1]) <line 3>
+|   return <line 31>
+|   write_nl(a=[0,0,3,0,1]) <line 5>
+|   return <line 31>
+|   write_nl(a=[0,0,3,0,1,5]) <line 7>
+|   return <line 31>
+|   write_nl(a=[false,false,false,true]) <line 9>
+|   return <line 31>
+|   write_nl(a=[0,0,0,2]) <line 12>
+|   return <line 31>
+|   wolo() <line 0>
+|   return 5 <line 36>
+|   write_nl(a=5) <line 14>
+|   return <line 31>
+|   test(&w=[0,0,0,0,2]) <line 16>
+|   |   write_nl(a=[0,0,0,0,2]) <line 23>
+|   |   return <line 31>
+|   |   write_nl(a=[0,0,0,2,2]) <line 25>
+|   |   return <line 31>
+|   return, &w=[0,0,0,2,2] <line 26>
+|   write_nl(a=[0,0,0,2,2]) <line 17>
+|   return <line 31>
+|   array(x=3) <line 18>
+|   return [,,,,,hello!] <line 41>
+|   write_nl(a=[,,,,,hello!]) <line 19>
+|   return <line 31>
+return <line 31>
