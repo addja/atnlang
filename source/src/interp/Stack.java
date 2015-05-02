@@ -134,6 +134,40 @@ public class Stack {
         }
     }
 
+    /** Defines the value of a global array variable. If the array does not
+     * exist, it is created with null slots. If it exists, the value and type of
+     * the variable are re-defined.
+     * @param name The name of the variable
+     * @param value The value of the variable
+     * @param index The index in which the value must be assigned in the array
+     */
+    public void defineArrayVariableGlobal(String name, Data value, int index) {
+        Data d = Global.get(name);
+        if (d == null) {
+            Data array;
+            if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
+            else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
+            else array = new Data(index,value.getStringValue());
+            Global.put(name, array); 
+        }
+        else {
+            if (d.getArrayType() != value.getType()){
+                Data newarr;
+                if (value.isBoolean())
+                    newarr = new Data(index, value.getBooleanValue());
+                else if (value.isInteger())
+                    newarr = new Data(index, value.getIntegerValue());
+                else newarr = new Data(index, value.getStringValue());
+                d.setData(newarr);
+            }
+            else { // same type of data
+                if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
+                else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
+                else d.setValue(index,value.getStringValue());
+            }
+        }
+    }
+
 
     /** Gets the value of the variable. The value is represented as
      * a Data object. In this way, any modification of the object
