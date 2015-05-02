@@ -1,0 +1,10 @@
+b = "adeu! %n";
+
+def printer(a) {
+	print a;
+	print b;
+}
+
+def main() {
+	printer("hola! %n");
+}

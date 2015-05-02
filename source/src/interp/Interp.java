@@ -107,6 +107,7 @@ public class Interp {
                         Stack.defineArrayVariableGlobal(id, value, index);
                     }
                     Stack.defineVariableGlobal(f.getChild(0).getText(), value);
+                    System.out.println("hiiiii");
                     break;
 
                 case ATNLexer.ATN:
@@ -296,7 +297,7 @@ public class Interp {
                 ATNTree v = t.getChild(0);
 
                 // Write an expression
-                System.out.print(evaluateExpression(v).toString());
+                System.out.format(evaluateExpression(v).toString());
                 return null;
 
             // Function call
