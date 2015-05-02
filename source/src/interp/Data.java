@@ -84,7 +84,7 @@ public class Data {
     Data(Data d) { 
         type = d.type;
         arrayType = d.arrayType;
-        value = d.value; 
+        value = new String(d.value); 
         if (arrayType == Type.VOID) array = null;
         else array = new ArrayList<String>(d.array);
     }
