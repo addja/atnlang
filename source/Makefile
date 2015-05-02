@@ -52,9 +52,9 @@ INTERP_SRC =	$(INTERP)/Interp.java \
 
 ALL_SRC =		$(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 
-TESTS_SRC = 	$(wildcard $(TEST)/*.atn)
+TESTS_SRC := 	$(wildcard $(TEST)/*.atn)
 
-all: compile exec docs tests
+all: compile exec tests
 
 compile:
 	java -jar $(LIB_ANTLR) -o $(PARSER) $(GRAMMAR)
@@ -77,16 +77,16 @@ exec:
 	printf 'exec java -enableassertions -jar $(JARFILE) "$$@"' >> $(EXEC)
 	chmod a+x $(EXEC)
 
-#move and uncomment next line to generate compared files
-#$(EXEC) $< -ast $<.ast -trace $<.trace > $<.out 
-tests: $(TESTS_SRC)
-	@echo ""
-	@echo $<
-	@echo "AST\tTrace\tOutput"
-	@$(EXEC) $< -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out
-	@diff -bB $<.ast $(TEMPDIR)/temp.ast; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 1; fi
-	@diff -bB $<.trace $(TEMPDIR)/temp.trace; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 2; fi
-	@diff -bB $<.out $(TEMPDIR)/temp.out; if [ $$? -eq 0 ] ; then printf "OK\n" ; else printf "FAIL\n"; exit 3; fi
+tests: 
+	@for f in $(TESTS_SRC); do \
+		echo "" ; \
+		echo $$f ; \
+		echo "AST\tTrace\tOutput" ; \
+		$(EXEC) $$f -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out ; \
+		diff -bB $$f.ast $(TEMPDIR)/temp.ast; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 1; fi ; \
+		diff -bB $$f.trace $(TEMPDIR)/temp.trace; if [ $$? -eq 0 ] ; then printf "OK\t" ; else printf "FAIL\t"; exit 2; fi ; \
+		diff -bB $$f.out $(TEMPDIR)/temp.out; if [ $$? -eq 0 ] ; then printf "OK\n" ; else printf "FAIL\n"; exit 3; fi ; \
+	done
 
 clean:
 	rm -rf $(PARSER)/*.java $(PARSER)/*.tokens 

@@ -84,7 +84,8 @@ public class Data {
     Data(Data d) { 
         type = d.type;
         arrayType = d.arrayType;
-        value = new String(d.value); 
+        if (d.value != null) value = new String(d.value); 
+        //else value = null; not necessary, undef behaviour
         if (arrayType == Type.VOID) array = null;
         else array = new ArrayList<String>(d.array);
     }
@@ -258,7 +259,7 @@ public class Data {
                     s += x.equals("1") ? "true" : "false";
                 else s += x;
             }
-            s += "]\n";
+            s += "]";
             return s;
         }
         else return value;

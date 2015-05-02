@@ -1,0 +1,26 @@
+def write_nl(a){
+	print a; 
+	print "%n";
+}
+
+def main() {
+    x = 42;
+	write_nl(x);
+	x = true;
+	write_nl(x);
+	x[2] = 5;
+	write_nl(x);
+	x[1] = 2; 
+	write_nl(x);
+	x[9] = 100; 	
+	write_nl(x);
+	x[3] = true;	
+	write_nl(x);
+	x[1] = true; 	
+	write_nl(x);
+	x[2] = x[1];	
+	write_nl(x);
+	x[5] = false;	
+	write_nl(x);
+}
+

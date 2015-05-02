@@ -1,0 +1,20 @@
+main() <entry point>
+|   write_nl(a=42) <line 8>
+|   return <line 3>
+|   write_nl(a=true) <line 10>
+|   return <line 3>
+|   write_nl(a=[0,0,5]) <line 12>
+|   return <line 3>
+|   write_nl(a=[0,2,5]) <line 14>
+|   return <line 3>
+|   write_nl(a=[0,2,5,0,0,0,0,0,0,100]) <line 16>
+|   return <line 3>
+|   write_nl(a=[false,false,false,true]) <line 18>
+|   return <line 3>
+|   write_nl(a=[false,true,false,true]) <line 20>
+|   return <line 3>
+|   write_nl(a=[false,true,true,true]) <line 22>
+|   return <line 3>
+|   write_nl(a=[false,true,true,true,false,false]) <line 24>
+|   return <line 3>
+return <line 3>

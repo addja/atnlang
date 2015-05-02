@@ -246,7 +246,7 @@ public class Interp {
                     int index = t.getChild(0).getChild(1).getIntValue();
                     Stack.defineArrayVariable (id, value, index);
                 }
-                Stack.defineVariable (t.getChild(0).getText(), value);
+                else Stack.defineVariable (t.getChild(0).getText(), value);
                 return null;
 
             // If-then-else
@@ -294,7 +294,6 @@ public class Interp {
             // Write statement: it can write an expression or a string.
             case ATNLexer.PRINT:
                 ATNTree v = t.getChild(0);
-
                 // Write an expression
                 System.out.format(evaluateExpression(v).toString());
                 return null;
@@ -341,6 +340,17 @@ public class Interp {
             case ATNLexer.BOOLEAN:
                 value = new Data(t.getBooleanValue());
                 break;
+            // An array value
+            case ATNLexer.BRACKET:
+                String id = t.getChild(0).getText();
+                int index = t.getChild(1).getIntValue();
+                Data array = Stack.getVariable(id);
+                if (array.isBooleanArray()) 
+                    value = new Data(array.getBooleanArrayValue(index));
+                else if (array.isStringArray()) 
+                    value = new Data(array.getStringArrayValue(index));
+                else value = new Data(array.getIntegerArrayValue(index));
+                break;
             // A function call. Checks that the function returns a result.
             case ATNLexer.FUNCALL:
                 value = executeFunction(t.getChild(0).getText(), t.getChild(1));
@@ -349,11 +359,13 @@ public class Interp {
                     throw new RuntimeException ("function expected to return a value");
                 }
                 break;
+            // Request of array length
             case ATNLexer.ARRAYLENGTH:
                 Data temp = new Data(Stack.getVariable(t.getChild(0).getText()));
                 checkArray(temp);
                 value = new Data(temp.getArrayLength());
                 break;
+            // String literal
             case ATNLexer.STRING:
                 value = new Data(t.getStringValue());
                 break;
@@ -517,6 +529,7 @@ public class Interp {
             ATNTree p = pars.getChild(i); // Parameters of the callee
             ATNTree a = args.getChild(i); // Arguments passed by the caller
             setLineNumber(a);
+
             if (p.getType() == ATNLexer.PVALUE) {
                 // Pass by value: evaluate the expression
                 Params.add(i,evaluateExpression(a));
@@ -530,6 +543,7 @@ public class Interp {
                 Params.add(i,v);
             }
         }
+
         return Params;
     }
 
