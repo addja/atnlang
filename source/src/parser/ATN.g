@@ -116,7 +116,7 @@ for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! instructions
             ;
 
 // Write an expression or a string
-print   :   PRINT^ (expr | STRING )
+print   :   PRINT^ expr
         ;
 
 //Return of a value in a function
@@ -148,6 +148,7 @@ factor  :   (NOT^ | PLUS^ | MINUS^)? atom
 // in parenthesis
 atom    :   subatom 
         |   INT
+        |   STRING
         |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
         |   funcall
         |   '('! expr ')'!

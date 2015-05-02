@@ -120,7 +120,7 @@ public class Data {
     public boolean isStringArray() { return arrayType == Type.STRING; }
 
     /** Returns the size of the array contained **/
-    public int getArraySize(){ 
+    public int getArrayLength(){ 
         if (array == null) return 0;
         return array.size(); 
     }
@@ -279,17 +279,22 @@ public class Data {
      * @param d Second operand.
      */
     public void evaluateArithmetic (int op, Data d) {
-        assert type == Type.INTEGER && d.type == Type.INTEGER;
-        int r = d.getIntegerValue(), temp = this.getIntegerValue();
-        switch (op) {
-            case ATNLexer.PLUS: temp += r; break;
-            case ATNLexer.MINUS: temp -= r; break;
-            case ATNLexer.MUL: temp *= r; break;
-            case ATNLexer.DIV: checkDivZero(d); temp /= r; break;
-            case ATNLexer.MOD: checkDivZero(d); temp %= r; break;
-            default: assert false;
+        assert (type == Type.INTEGER && d.type == Type.INTEGER)
+                || (type == Type.STRING && d.type == Type.STRING && op == ATNLexer.PLUS);
+
+        if (type == Type.INTEGER && d.type == Type.INTEGER) {
+            int r = d.getIntegerValue(), temp = this.getIntegerValue();
+            switch (op) {
+                case ATNLexer.PLUS: temp += r; break;
+                case ATNLexer.MINUS: temp -= r; break;
+                case ATNLexer.MUL: temp *= r; break;
+                case ATNLexer.DIV: checkDivZero(d); temp /= r; break;
+                case ATNLexer.MOD: checkDivZero(d); temp %= r; break;
+                default: assert false;
+            }
+            value = String.valueOf(temp);
         }
-        value = String.valueOf(temp);
+        else value += d.value;
     }
 
     /**

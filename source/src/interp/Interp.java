@@ -221,6 +221,11 @@ public class Interp {
             // Assignment
             case ATNLexer.ASSIGN:
                 value = evaluateExpression(t.getChild(1));
+                if (t.getChild(0).getType() == ATNLexer.BRACKET) {
+                    String id = t.getChild(0).getChild(0).getText();
+                    int index = t.getChild(0).getChild(1).getIntValue();
+                    Stack.defineArrayVariable (id, value, index);
+                }
                 Stack.defineVariable (t.getChild(0).getText(), value);
                 return null;
 
@@ -269,11 +274,6 @@ public class Interp {
             // Write statement: it can write an expression or a string.
             case ATNLexer.PRINT:
                 ATNTree v = t.getChild(0);
-                // Special case for strings
-                if (v.getType() == ATNLexer.STRING) {
-                    System.out.format(v.getStringValue());
-                    return null;
-                }
 
                 // Write an expression
                 System.out.print(evaluateExpression(v).toString());
@@ -329,6 +329,14 @@ public class Interp {
                     throw new RuntimeException ("function expected to return a value");
                 }
                 break;
+            case ATNLexer.ARRAYLENGTH:
+                Data temp = new Data(Stack.getVariable(t.getChild(0).getText()));
+                checkArray(temp);
+                value = new Data(temp.getArrayLength());
+                break;
+            case ATNLexer.STRING:
+                value = new Data(t.getStringValue());
+                break;
             default: break;
         }
 
@@ -377,7 +385,6 @@ public class Interp {
                 break;
 
             // Arithmetic operators
-            // NEEDED plus add strings
             case ATNLexer.PLUS:
             case ATNLexer.MINUS:
             case ATNLexer.MUL:
@@ -448,6 +455,13 @@ public class Interp {
     private void checkInteger (Data b) {
         if (!b.isInteger()) {
             throw new RuntimeException ("Expecting numerical expression");
+        }
+    }
+
+    /** Checks that the data is integer and raises an exception if it is not. */
+    private void checkArray (Data b) {
+        if (!b.isArray()) {
+            throw new RuntimeException ("Length can only be executed on array variables");
         }
     }
 
