@@ -239,7 +239,7 @@ public class Interp {
         Stack.defineVariable("text", Arg_values.get(0));
 
         // Execute the instructions
-        Data result = atn.run(text.getStringValue(), Stack);
+        Data result = atn.Run(text.getStringValue(), Stack);
 
         // If the result is null, then the function returns void
         if (result == null) result = new Data();
