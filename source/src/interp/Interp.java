@@ -26,7 +26,7 @@ public class Interp {
      * Each entry of the map stores the root of the ATN
      * object.
      */
-    private HashMap<String,ATNFunc> ATNname2Tree;
+    private HashMap<String,ATNInterp> ATNname2Tree;
 
     /**
     * // TODO input extention
@@ -93,7 +93,7 @@ public class Interp {
     private void ParseProgram(ATNTree T) {
         assert T != null && T.getType() == ATNLexer.PROGRAM;
         FuncName2Tree = new HashMap<String,ATNTree>();
-        ATNname2Tree = new HashMap<String,ATNFunc>();
+        ATNname2Tree = new HashMap<String,ATNInterp>();
         int n = T.getChildCount();
         for (int i = 0; i < n; ++i) {
             ATNTree f = T.getChild(i);
@@ -121,7 +121,7 @@ public class Interp {
                     if (ATNname2Tree.containsKey(name)) {
                         throw new RuntimeException("Multiple definitions of atn " + name);
                     }
-                    ATNname2Tree.put(name, new ATNFunc(f.getChild(1)));
+                    ATNname2Tree.put(name, new ATNInterp(f.getChild(1)));
                     break;
 
                 default:
@@ -218,7 +218,7 @@ public class Interp {
      */
     private Data executeATN (String atnname, Data text) {
         // Get the AST of the atn
-        ATNFunc atn = ATNname2Tree.get(atnname);
+        ATNInterp atn = ATNname2Tree.get(atnname);
         if (atn == null) throw new RuntimeException(" atn " + atnname + " not declared");
 
         // Gather the list of arguments of the caller. This function
