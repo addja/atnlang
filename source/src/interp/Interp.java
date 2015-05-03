@@ -22,6 +22,13 @@ public class Interp {
     private HashMap<String,ATNTree> FuncName2Tree;
 
     /**
+     * Map between function names (keys) and ATN.
+     * Each entry of the map stores the root of the ATN
+     * object.
+     */
+    private HashMap<String,ATNFunc> ATNname2Tree;
+
+    /**
     * // TODO input extention
     * // Standard input of the interpreter (System.in).
     * private Scanner stdin;
@@ -85,11 +92,11 @@ public class Interp {
      */
     private void ParseProgram(ATNTree T) {
         assert T != null && T.getType() == ATNLexer.PROGRAM;
-        FuncName2Tree = new HashMap<String,ATNTree> ();
+        FuncName2Tree = new HashMap<String,ATNTree>();
+        ATNname2Tree = new HashMap<String,ATNFunc>();
         int n = T.getChildCount();
         for (int i = 0; i < n; ++i) {
             ATNTree f = T.getChild(i);
-            // TODO: switch atn and global
             switch(f.getType()) {
                 case ATNLexer.DEF:
                     String fname = f.getChild(0).getText();
@@ -110,7 +117,11 @@ public class Interp {
                     break;
 
                 case ATNLexer.ATN:
-                    // TODO implemnent
+                    String name = f.getChild(0).getText();
+                    if (ATNname2Tree.containsKey(name)) {
+                        throw new RuntimeException("Multiple definitions of atn " + name);
+                    }
+                    ATNname2Tree.put(name, new ATNFunc(f.getChild(1)));
                     break;
 
                 default:
@@ -199,7 +210,48 @@ public class Interp {
         return result;
     }
 
-    // TODO: execute ATN with the stack.pushArc() and popArc() with one pushactivationrecord and popactivationrecord
+    /**
+     * Executes an ATN.
+     * @param atnname The name of the function.
+     * @param args The AST node representing the list of arguments of the caller.
+     * @return The data returned by the function.
+     */
+    private Data executeATN (String atnname, Data text) {
+        // Get the AST of the atn
+        ATNFunc atn = ATNname2Tree.get(atnname);
+        if (atn == null) throw new RuntimeException(" atn " + atnname + " not declared");
+
+        // Gather the list of arguments of the caller. This function
+        // performs all the checks required for the compatibility of
+        // parameters.
+        ArrayList<Data> Arg_values = new ArrayList<Data>();
+        Arg_values.add(text);
+
+        // Dumps trace information (function call and arguments)
+        if (trace != null) traceFunctionCall(atn.getTree(), Arg_values);
+
+        // Create the activation record in memory
+        Stack.pushActivationRecord(atnname, lineNumber());
+
+        // Track line number
+        setLineNumber(atn.getTree());
+         
+        Stack.defineVariable("text", Arg_values.get(0));
+
+        // Execute the instructions
+        Data result = atn.run(text.getStringValue(), Stack);
+
+        // If the result is null, then the function returns void
+        if (result == null) result = new Data();
+        
+        // Dumps trace information
+        if (trace != null) traceReturn(atn.getTree(), result, Arg_values);
+        
+        // Destroy the activation record
+        Stack.popActivationRecord();
+
+        return result;
+    }
 
     /**
      * Executes a block of instructions. The block is terminated
@@ -235,7 +287,6 @@ public class Interp {
         Data value; // The returned value
 
         // A big switch for all type of instructions
-        // TODOED: add ATN
         switch (t.getType()) {
 
             // Assignment
@@ -307,6 +358,14 @@ public class Interp {
                 executeFunction(t.getChild(0).getText(), t.getChild(1));
                 return null;
 
+            case ATNLexer.ATN:
+                executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1)));
+                // TODO : think about this
+                // if (!b) {
+                //     throw new RuntimeException ("atn parse error");
+                // }
+                return null;
+
             default: assert false; // Should never happen
         }
 
@@ -330,7 +389,6 @@ public class Interp {
 
         Data value = null;
         // Atoms
-        // TODO: add atn
         switch (type) {
             // A variable
             case ATNLexer.ID:
@@ -361,6 +419,13 @@ public class Interp {
                 assert value != null;
                 if (value.isVoid()) {
                     throw new RuntimeException ("function expected to return a value");
+                }
+                break;
+            case ATNLexer.ATN:
+                value = executeATN(t.getChild(0).getText(),  evaluateExpression(t.getChild(1)));
+                assert value != null;
+                if (value.isVoid()) {
+                    throw new RuntimeException ("atn failed to return a value");
                 }
                 break;
             // Request of array length
