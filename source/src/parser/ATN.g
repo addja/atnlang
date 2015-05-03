@@ -42,16 +42,16 @@ prog    : utilities+ EOF -> ^(PROGRAM utilities+)
 utilities   : DEF^ ID params '{'! block_instructions '}'!
             | ATN^ ID '{'! node_list '}'!
             | assign ';'!
-			| funcall ';'!
+            | funcall ';'!
             ;
 
-node_list   : node (node)+
+node_list   : node+
             ;
             
 node        : NODE^ ID ('{'! arc_list '}'! | ACCEPT ';'!)
             ;
 
-arc_list    : arc (arc)+ 
+arc_list    : arc+
             ;
 
 arc        : ARC^ '(' expr ')'! JUMP ID instructions
@@ -158,7 +158,7 @@ atom    :   subatom
         ;
 
 subatom :   ID (BRACKET^ expr ']'!)?
-		| 	ID '.length' -> ^(ARRAYLENGTH ID)
+        |   ID '.length' -> ^(ARRAYLENGTH ID)
         ;
         
 // A function call has a lits of arguments in parenthesis (possibly empty)
