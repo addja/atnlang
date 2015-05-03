@@ -293,9 +293,13 @@ public class Interp {
 
             // Write statement: it can write an expression or a string.
             case ATNLexer.PRINT:
-                ATNTree v = t.getChild(0);
-                // Write an expression
-                System.out.format(evaluateExpression(v).toString());
+                int n = t.getChildCount();
+                String s = "";
+                for (int i = 0; i < n; ++i) {
+                    // Write an expression
+                    s += evaluateExpression(t.getChild(i)).toString();
+                }
+                System.out.format(s);
                 return null;
 
             // Function call

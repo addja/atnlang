@@ -116,7 +116,7 @@ for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! instructions
             ;
 
 // Write an expression or a string
-print   :   PRINT^ expr
+print   :   PRINT^ expr (','! expr)*
         ;
 
 //Return of a value in a function

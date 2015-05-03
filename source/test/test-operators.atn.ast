@@ -1,0 +1,1 @@
+(PROGRAM (def main PARAMS (LIST_INSTR (:= a "hello ") (:= b "world") (:= c (+ (+ a b) "!")) (print (+ c "%n")) (:= d (% 3 (- 2))) (print (+ d 3) "%n") (:= e (<= 3 4)) (print e "%n"))))
