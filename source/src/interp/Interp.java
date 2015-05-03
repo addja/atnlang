@@ -360,10 +360,8 @@ public class Interp {
 
             case ATNLexer.ATN:
                 executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1)));
-                // TODO : think about this
-                // if (!b) {
-                //     throw new RuntimeException ("atn parse error");
-                // }
+                // TODO : interrupt execution or raise exception when a void
+                // atn is executed and fails
                 return null;
 
             default: assert false; // Should never happen

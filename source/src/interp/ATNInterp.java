@@ -7,7 +7,7 @@ public class ATNInterp  {
     private HashMap<String,ATNTree> node2Tree;
     private String startingNode;
     private ATNTree tree;
-    private String parseText;
+    private String text;
 
     public ATNInterp (ATNTree t) {
         node2Tree = new HashMap<String,ATNTree>();
@@ -23,11 +23,8 @@ public class ATNInterp  {
     public ATNTree getTree() { return tree; }
 
     public Data Run (String text, Stack Stack) {
-
-        parseText = text;
-        boolean b = executeNode(startingNode);
-
-        return new Data(b);
+        this.text = text;
+        return new Data(executeNode(startingNode));
     }
 
     private boolean executeNode (String name) {
@@ -38,9 +35,11 @@ public class ATNInterp  {
         for (int i = 1; i < node.getChildCount(); i++) {
             ATNTree arc = node.getChild(i);
             if (evaluateExpression(arc.getChild(0))) {
-                executeListInstructions(node.getChild(x).getChild(2));
-                boolean b = executeNode(node.getChild(x).getChild(1).getText());
-                if (b) return true;
+                Data r = executeListInstructions(arc.getChild(2));
+                if (!r.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
+                String nextNode = arc.getChild(1).getText();
+                if (executeNode(nextNode)) return true;
+
                 // desfer el executeListInstructions -> push pop activation record + copia vars globals
             }
         }
