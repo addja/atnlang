@@ -418,6 +418,13 @@ public class Interp {
 
             // Arithmetic operators
             case ATNLexer.PLUS:
+                value2 = evaluateExpression(t.getChild(1));
+                if (value.isInteger()) {
+                    checkInteger(value); checkInteger(value2);
+                }
+                else { checkString(value); checkString(value); }
+                value.evaluateArithmetic(type, value2);
+                break;
             case ATNLexer.MINUS:
             case ATNLexer.MUL:
             case ATNLexer.DIV:
@@ -494,6 +501,13 @@ public class Interp {
     private void checkArray (Data b) {
         if (!b.isArray()) {
             throw new RuntimeException ("Length can only be executed on array variables");
+        }
+    }
+
+    /** Checks that the data is integer and raises an exception if it is not. */
+    private void checkString (Data b) {
+        if (!b.isString()) {
+            throw new RuntimeException ("Expecting a String concatenation");
         }
     }
 
