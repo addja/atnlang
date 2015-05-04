@@ -16,6 +16,7 @@ tokens {
     FUNCALL;    // Function call
     ARGLIST;    // List of arguments passed in a function call
     LIST_INSTR; // Block of instructions
+    ARC_LIST;   // List of arc definitions
     BOOLEAN;    // Boolean atom (for Boolean constants "true" or "false")
     PVALUE;     // Parameter by value in the list of parameters
     PREF;       // Parameter by reference in the list of parameters
@@ -40,23 +41,21 @@ prog    : utilities+ EOF -> ^(PROGRAM utilities+)
         
 // An utility can be a function, a variable or an atn   
 utilities   : DEF^ ID params '{'! block_instructions '}'!
-            | ATN^ ID '{'! node_list '}'!
+            | ATN^ ID '{'! node+ '}'!
             | assign ';'!
             | funcall ';'!
             ;
 
-node_list   : node+
-            ;
-            
-node        : NODE^ ID ('{'! arc_list '}'! | ACCEPT ';'!)
+node        : NODE^ ID arc_list
             ;
 
-arc_list    : arc+
+arc_list    : '{' arc+ '}' -> ^(ARC_LIST arc+) 
+            | ACCEPT? ';'!  //A node can have no arcs
             ;
 
-arc        : ARC^ '(' expr ')'! JUMP ID instructions
+arc        : ARC^ '(' expr ')'! (JUMP^ ID) list_instructions
            ;
-       
+
 // The list of parameters grouped in a subtree (it can be empty)
 params  : '(' paramlist? ')' -> ^(PARAMS paramlist?)
         ;
@@ -71,15 +70,16 @@ param   :   '&' id=ID -> ^(PREF[$id,$id.text])
         |   id=ID -> ^(PVALUE[$id,$id.text])
         ;
 
-instructions
+// A list of instructions, either enclosed or not
+list_instructions
         :  inst_comma -> ^(LIST_INSTR inst_comma)
         |  '{'! block_instructions '}'!
         ;
 
-// A list of instructions, all of them gouped in a subtree
+// A block of instructions, all of them gouped in a subtree
 block_instructions
-        :  inst_comma (inst_comma)* 
-            -> ^(LIST_INSTR inst_comma+)
+        :  inst_comma+ -> ^(LIST_INSTR inst_comma+)
+        |                   //Empty block
         ;
 
 inst_comma
@@ -103,16 +103,16 @@ assign  :   subatom eq=EQUAL expr -> ^(ASSIGN[$eq,":="] subatom expr)
         ;
         
 // if-then-else (else is optional)
-ite_stmt    :   IF^ '('! expr ')'! instructions
-                (ELSE! instructions)? 
+ite_stmt    :   IF^ '('! expr ')'! list_instructions
+                (ELSE! list_instructions)? 
             ;
 
 // while statement
-while_stmt  :   WHILE^ '('! expr ')'! instructions
+while_stmt  :   WHILE^ '('! expr ')'! list_instructions
             ;
             
 // for statement
-for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! instructions
+for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! list_instructions
             ;
 
 // Write an expression or a string

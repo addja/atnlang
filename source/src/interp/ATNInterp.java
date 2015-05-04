@@ -37,7 +37,7 @@ public class ATNInterp  {
             if (evaluateExpression(arc.getChild(0))) {
                 Data r = executeListInstructions(arc.getChild(2));
                 if (!r.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
-                String nextNode = arc.getChild(1).getText();
+                String nextNode = arc.getChild(1).getChild(0).getText();
                 if (executeNode(nextNode)) return true;
 
                 // desfer el executeListInstructions -> push pop activation record + copia vars globals

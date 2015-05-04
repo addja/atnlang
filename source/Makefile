@@ -49,7 +49,7 @@ INTERP_SRC =	$(INTERP)/Interp.java \
 				$(INTERP)/Data.java \
 				$(INTERP)/$(TARGET)Tree.java \
 				$(INTERP)/$(TARGET)TreeAdaptor.java \
-				$(INTERP)/$(TARGET)Func.java \
+				$(INTERP)/$(TARGET)Interp.java \
 
 ALL_SRC =		$(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 
