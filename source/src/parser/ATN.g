@@ -53,8 +53,11 @@ arc_list    : '{' arc+ '}' -> ^(ARC_LIST arc+)
             | ACCEPT? ';'!  //A node can have no arcs
             ;
 
-arc        : ARC^ '(' expr ')'! (JUMP^ ID) list_instructions
+arc        : ARC^ '(' expr ')'! arc_jump list_instructions
            ;
+
+arc_jump    : JUMP^ ID
+            ;
 
 // The list of parameters grouped in a subtree (it can be empty)
 params  : '(' paramlist? ')' -> ^(PARAMS paramlist?)
