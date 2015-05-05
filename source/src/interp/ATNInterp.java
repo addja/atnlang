@@ -31,7 +31,7 @@ public class ATNInterp  {
     private boolean executeNode (String name) {
         ATNTree node = node2Tree.get(name);
         ATNTree arc_list = node.getChild(1);
-        
+
         //TODO: what happens if node has no arcs?
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
 
@@ -43,7 +43,9 @@ public class ATNInterp  {
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 if (executeNode(nextNode)) return true;
 
-                // desfer el executeListInstructions -> push pop activation record + copia vars globals
+                // TODO: desfer el executeListInstructions -> push pop activation record + copia vars globals
+                // TODO: cal modificar / copiar executeInstructions per detectar quan HASHCODE o altres apareixen
+                // i executar el Freeling correctament
             }
         }
         return false;
