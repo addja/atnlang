@@ -1,6 +1,7 @@
 package interp;
 
 import java.util.HashMap;
+import parser.*;
 
 public class ATNInterp  {
 
@@ -22,18 +23,20 @@ public class ATNInterp  {
 
     public ATNTree getTree() { return tree; }
 
-    public Data Run (String text, Stack Stack) {
+    public Data Run (String text, Stack stack) {
         this.text = text;
         return new Data(executeNode(startingNode));
     }
 
     private boolean executeNode (String name) {
         ATNTree node = node2Tree.get(name);
+        ATNTree arc_list = node.getChild(1);
+        
+        //TODO: what happens if node has no arcs?
+        if (arc_list.getType() == ATNLexer.ACCEPT) return true;
 
-        if (node.getChild(1) == ATNLexer.ACCEPT) return true;
-
-        for (int i = 1; i < node.getChildCount(); i++) {
-            ATNTree arc = node.getChild(i);
+        for (int i = 0; i < arc_list.getChildCount(); ++i) {
+            ATNTree arc = arc_list.getChild(i);
             if (evaluateExpression(arc.getChild(0))) {
                 Data r = executeListInstructions(arc.getChild(2));
                 if (!r.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");

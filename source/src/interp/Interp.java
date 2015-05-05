@@ -420,7 +420,7 @@ public class Interp {
                 }
                 break;
             case ATNLexer.ATN:
-                value = executeATN(t.getChild(0).getText(),  evaluateExpression(t.getChild(1)));
+                value = executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1)));
                 assert value != null;
                 if (value.isVoid()) {
                     throw new RuntimeException ("atn failed to return a value");

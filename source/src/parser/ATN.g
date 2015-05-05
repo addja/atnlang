@@ -50,7 +50,7 @@ node        : NODE^ ID arc_list
             ;
 
 arc_list    : '{' arc+ '}' -> ^(ARC_LIST arc+) 
-            | ACCEPT? ';'!  //A node can have no arcs
+            | (ACCEPT^)? ';'!  //TODO: A node can have no arcs
             ;
 
 arc        : ARC^ '(' expr ')'! arc_jump list_instructions
@@ -143,7 +143,7 @@ num_expr:   term ( (PLUS^ | MINUS^) term)*
 term    :   factor ( (MUL^ | DIV^ | MOD^) factor)*
         ;
 
-factor  :   (NOT^ | PLUS^ | MINUS^)? atom
+factor  :   (NOT^ | PLUS^ | MINUS^) factor | atom
         ;
 
 // Atom of the expressions (variables, integer and boolean literals).
