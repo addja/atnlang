@@ -511,7 +511,7 @@ public class Interp {
         Data value2;
         switch (type) {
             // Relational operators
-            case ATNLexer.EQUAL:
+            case ATNLexer.EQ_COMP:
             case ATNLexer.NOT_EQUAL:
             case ATNLexer.LT:
             case ATNLexer.LE:

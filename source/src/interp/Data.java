@@ -307,7 +307,7 @@ public class Data {
     public Data evaluateRelational (int op, Data d) {
         assert type != Type.VOID && type == d.type;
         switch (op) {
-            case ATNLexer.EQUAL: return new Data(value.equals(d.value));
+            case ATNLexer.EQ_COMP: return new Data(value.equals(d.value));
             case ATNLexer.NOT_EQUAL: return new Data(!value.equals(d.value));
             case ATNLexer.LT: 
                 if (type == Type.INTEGER) 

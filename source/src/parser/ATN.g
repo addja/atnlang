@@ -41,7 +41,7 @@ prog    : utilities+ EOF -> ^(PROGRAM utilities+)
 // An utility can be a function, a variable or an atn   
 utilities   : DEF^ ID params '{'! block_instructions '}'!
             | ATN^ ID '{'! node_list '}'!
-            | assign ';'!
+            | assign ';'!   //Global vars
             ;
 
 node_list   : node+ -> ^(NODELIST node+)
@@ -65,7 +65,8 @@ params  : '(' paramlist? ')' -> ^(PARAMS paramlist?)
         ;
 
 // Parameters are separated by commas
-paramlist: param (','! param)*
+paramlist
+        : param (','! param)*
         ;
 
 // Parameters with & as prefix are passed by reference
@@ -136,7 +137,7 @@ expr    :   boolterm (OR^ boolterm)*
 boolterm:   boolfact (AND^ boolfact)*
         ;
 
-boolfact:   num_expr ((EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+boolfact:   num_expr ((EQ_COMP^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
         ;
 
 num_expr:   term ( (PLUS^ | MINUS^) term)*
@@ -180,6 +181,7 @@ expr_list:  expr (','! expr)*
 // Basic tokens
 BRACKET : '[' ;
 EQUAL   : '=' ;
+EQ_COMP : '==' ;
 NOT_EQUAL: '!=' ;
 LT      : '<' ;
 LE      : '<=';
