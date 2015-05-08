@@ -423,7 +423,10 @@ public class Interp {
                     throw new RuntimeException ("Atn input special option can't be called"
                         + "outside an atn");
                 }
-                int i = t.getIntValue();
+                int i = t.getChild(0).getIntValue();
+                if (i >= inputToParse.get(parseIndex).size()){
+                     throw new RuntimeException ("Index " + i + " out of bounds in the # tuple");
+                }
                 value = new Data(inputToParse.get(parseIndex).get(i));
                 break;
             // A variable
