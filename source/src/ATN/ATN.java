@@ -8,6 +8,8 @@ import org.antlr.stringtemplate.*;
 // Imports from Java
 import org.apache.commons.cli.*; // Command Language Interface
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 // Parser and Interpreter
 import parser.*;
@@ -86,13 +88,15 @@ public class ATN {
             output.close();
         }
 
+        ArrayList<ArrayList<String>> freelingInput = readInput();
+
         // Start interpretation (only if execution required)
         if (execute) {
             // Creates and prepares the interpreter
             Interp I = null;
             int linenumber = -1;
             try {
-                I = new Interp(t, tracefile); // prepares the interpreter
+                I = new Interp(t, tracefile, freelingInput); // prepares the interpreter
                 I.Run();                  // Executes the code
             } catch (RuntimeException e) {
                 if (I != null) linenumber = I.lineNumber();
@@ -110,6 +114,21 @@ public class ATN {
             }
         }
     }
+
+    /**
+     * Reads input to parse
+     */
+    private static ArrayList<ArrayList<String>> readInput() {
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        while (scanner.hasNextLine()) {
+            System.out.println(line);
+            line = scanner.nextLine();
+        }
+        System.exit(0);
+        return null;
+    }
+
 
     /**
      * Function to parse the command line. It defines some of

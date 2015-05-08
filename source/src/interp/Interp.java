@@ -18,6 +18,10 @@ public class Interp {
     /** Memory of the virtual machine. */
     private Stack Stack;
 
+    /** input text to parse variables */
+    private int parseIndex;
+    private ArrayList<ArrayList<String>> inputToParse;
+
     /**
      * Map between function names (keys) and ASTs (values).
      * Each entry of the map stores the root of the AST
@@ -54,8 +58,10 @@ public class Interp {
      * Constructor of the interpreter. It prepares the main
      * data structures for the execution of the main program.
      */
-    public Interp(ATNTree T, String tracefile) {
+    public Interp(ATNTree T, String tracefile, ArrayList<ArrayList<String>> input) {
         assert T != null;
+        inputToParse = input;
+        parseIndex = 0;
         Stack = new Stack(); // Creates the memory of the virtual machine
         PreProcessAST(T); // Some internal pre-processing ot the AST
         ParseProgram(T);  // Creates the table to map function names into AST nodes
@@ -169,6 +175,17 @@ public class Interp {
     /** Defines the current line number with a specific value */
     private void setLineNumber(int l) { linenumber = l;}
     
+    /** updates the parse text index */
+    public void setParseIndex(int i) {
+        parseIndex = i;
+    }
+
+    /** returns the parse input indez */
+    public int getParseIndex() { return parseIndex; }
+
+    /** advences the parse index one position */
+    public void forwardParseIndex() { ++parseIndex; }
+
     /**
      * Executes a function.
      * @param funcname The name of the function.
@@ -248,7 +265,7 @@ public class Interp {
         Stack.defineVariable("text", Arg_values.get(0));
 
         // Execute the instructions
-        Data result = atn.Run(text.getStringValue());
+        Data result = atn.Run();
 
         // If the result is null, then the function returns void
         if (result == null) result = new Data();
@@ -330,6 +347,9 @@ public class Interp {
 
             // Return
             case ATNLexer.RETURN:
+                if (flag == Caller.ATN) {
+                    throw new RuntimeException ("Return statement can't be called from an atn");
+                }
                 if (t.getChildCount() != 0) {
                     return evaluateExpression(t.getChild(0),flag);
                 }
@@ -397,6 +417,15 @@ public class Interp {
         Data value = null;
         // Atoms
         switch (type) {
+            // A hash from atn
+            case ATNLexer.HASH:
+                if (flag == Caller.NORMAL) {
+                    throw new RuntimeException ("Atn input special option can't be called"
+                        + "outside an atn");
+                }
+                int i = t.getIntValue();
+                value = new Data(inputToParse.get(parseIndex).get(i));
+                break;
             // A variable
             case ATNLexer.ID:
                 value = new Data(Stack.getVariable(t.getText()));

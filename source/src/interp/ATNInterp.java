@@ -8,7 +8,6 @@ public class ATNInterp  {
     private HashMap<String,ATNTree> node2Tree;
     private String startingNode;
     private ATNTree tree;
-    private String text;
     private Interp interp;
 
     public ATNInterp (ATNTree t, Interp interp) {
@@ -25,8 +24,7 @@ public class ATNInterp  {
 
     public ATNTree getTree() { return tree; }
 
-    public Data Run (String text) {
-        this.text = text;
+    public Data Run () {
         return new Data(executeNode(startingNode));
     }
 
@@ -38,13 +36,16 @@ public class ATNInterp  {
 
         for (int i = 0; i < arc_list.getChildCount(); ++i) {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
+            int index_backup = interp.getParseIndex();
             ATNTree arc = arc_list.getChild(i);
             if (interp.evaluateExpression(arc.getChild(0), Interp.Caller.ATN).getBooleanValue()) {
                 executeAfterArc(arc.getChild(2), name + String.valueOf(i));
                 String nextNode = arc.getChild(1).getChild(0).getText();
+                interp.forwardParseIndex();
                 if (executeNode(nextNode)) return true;
             }
             interp.getStack().setGlobalVars(global_backup);
+            interp.setParseIndex(index_backup);
         }
         return false;
     }
