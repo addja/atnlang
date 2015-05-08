@@ -205,7 +205,7 @@ public class Interp {
         }
 
         // Execute the instructions
-        Data result = executeListInstructions(f.getChild(2),Caller.NORMAL);
+        Data result = executeListInstructions(f.getChild(2), flag);
 
         // If the result is null, then the function returns void
         if (result == null) result = new Data();
