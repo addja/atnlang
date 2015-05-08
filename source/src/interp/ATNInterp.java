@@ -29,8 +29,7 @@ public class ATNInterp  {
     }
 
     private boolean executeNode (String name) {
-        ATNTree node = node2Tree.get(name);
-        ATNTree arc_list = node.getChild(1);
+        ATNTree arc_list = node2Tree.get(name);
 
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
 
@@ -53,9 +52,8 @@ public class ATNInterp  {
     private void executeAfterArc (ATNTree t, String arcName) {
         interp.getStack().pushActivationRecord(arcName, interp.lineNumber());
         interp.setLineNumber(t);
-
         Data result = interp.executeListInstructions(t, Interp.Caller.ATN);
-        if (!result.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
+        if (result != null) throw new RuntimeException("Arcs cannot have return keyword");
         interp.getStack().popActivationRecord();
     }
 

@@ -1,17 +1,16 @@
 atn a1 {
 	node n1 {
 		arc (#.1 != ".") goto n1 {
-			print #.1;
+			print #.1, "%n";
 		}
 		arc (true) goto n2 {
-			print #.1;
+			print #.1, "%n";
 		}
 	}
 	node n2 accept;
 }
 
 def main() {
-   a = atn(a1);
-   print a;
+   atn(a1);
 }
 

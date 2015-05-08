@@ -243,7 +243,7 @@ public class Interp {
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private Data executeATN (String atnname, Data text) {
+    private Data executeATN (String atnname) {
         // Get the AST of the atn
         ATNInterp atn = ATNname2Tree.get(atnname);
         if (atn == null) throw new RuntimeException(" atn " + atnname + " not declared");
@@ -252,7 +252,6 @@ public class Interp {
         // performs all the checks required for the compatibility of
         // parameters.
         ArrayList<Data> Arg_values = new ArrayList<Data>();
-        Arg_values.add(text);
 
         // Dumps trace information (function call and arguments)
         if (trace != null) traceFunctionCall(atn.getTree(), Arg_values);
@@ -263,16 +262,16 @@ public class Interp {
         // Track line number
         setLineNumber(atn.getTree());
          
-        Stack.defineVariable("text", Arg_values.get(0));
-
         // Execute the instructions
         Data result = atn.Run();
 
-        // If the result is null, then the function returns void
-        if (result == null) result = new Data();
-        
         // Dumps trace information
         if (trace != null) traceReturn(atn.getTree(), result, Arg_values);
+        
+        // If the result is null, then the function returns void
+        if (!result.isBoolean()) {
+            throw new RuntimeException ("Atn did not return a boolean");
+        } 
         
         // Destroy the activation record
         Stack.popActivationRecord();
@@ -389,7 +388,7 @@ public class Interp {
                 return null;
 
             case ATNLexer.ATNCALL:
-                executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1),flag));
+                executeATN(t.getChild(0).getText());
                 // TODO : interrupt execution or raise exception when a void
                 // atn is executed and fails
                 return null;
@@ -459,7 +458,7 @@ public class Interp {
                 }
                 break;
             case ATNLexer.ATNCALL:
-                value = executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1), flag));
+                value = executeATN(t.getChild(0).getText());
                 assert value != null;
                 if (value.isVoid()) {
                     throw new RuntimeException ("atn failed to return a value");
