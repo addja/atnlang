@@ -171,7 +171,7 @@ funcall :   ID '(' expr_list? ')' -> ^(FUNCALL ID ^(ARGLIST expr_list?))
         ;
 
 // A function call has a lits of arguments in parenthesis (possibly empty)
-atncall :   'atn(' ID ')' -> ^(ATNCALL ID)
+atncall :   'atn' '(' ID ')' -> ^(ATNCALL ID)
         ;
 
 // A list of expressions separated by commas
