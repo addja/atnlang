@@ -40,7 +40,7 @@ public class ATNInterp  {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             ATNTree arc = arc_list.getChild(i);
             if (interp.evaluateExpression(arc.getChild(0), Interp.Caller.ATN).getBooleanValue()) {
-                executeArc(arc.getChild(2), name + String.valueOf(i));
+                executeAfterArc(arc.getChild(2), name + String.valueOf(i));
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 if (executeNode(nextNode)) return true;
             }
@@ -49,7 +49,7 @@ public class ATNInterp  {
         return false;
     }
 
-    private void executeArc (ATNTree t, String arcName) {
+    private void executeAfterArc (ATNTree t, String arcName) {
         interp.getStack().pushActivationRecord(arcName, interp.lineNumber());
         interp.setLineNumber(t);
 
