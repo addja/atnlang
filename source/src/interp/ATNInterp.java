@@ -39,15 +39,23 @@ public class ATNInterp  {
         for (int i = 0; i < arc_list.getChildCount(); ++i) {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             ATNTree arc = arc_list.getChild(i);
-            if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue(), interp.Caller.ATN) {
-                Data r = interp.executeListInstructions(arc.getChild(2), interp.Caller.ATN);
-                if (!r.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
+            if (interp.evaluateExpression(arc.getChild(0), interp.Caller.ATN).getBooleanValue()) {
+                executeArc(arc.getChild(2), name + String.valueOf(i));
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 if (executeNode(nextNode)) return true;
             }
             interp.getStack().setGlobalVars(global_backup);
         }
         return false;
+    }
+
+    private void executeArc (ATNTree t, String arcName) {
+        interp.getStack().pushActivationRecord(arcName, interp.lineNumber());
+        interp.setLineNumber(t);
+
+        Data result = interp.executeListInstructions(t, interp.Caller.ATN);
+        if (!result.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
+        interp.getStack().popActivationRecord();
     }
 
     private void createNode (ATNTree t) {

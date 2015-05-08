@@ -12,7 +12,7 @@ import java.io.*;
 public class Interp {
 
     /** Identifier for the interpreters */
-    public enum Caller {NORMAL, ATN};
+    public enum Caller {NORMAL, ATN;}
 
 
     /** Memory of the virtual machine. */
@@ -164,7 +164,7 @@ public class Interp {
     public int lineNumber() { return linenumber; }
 
     /** Defines the current line number associated to an AST node. */
-    private void setLineNumber(ATNTree t) { linenumber = t.getLine();}
+    public void setLineNumber(ATNTree t) { linenumber = t.getLine();}
 
     /** Defines the current line number with a specific value */
     private void setLineNumber(int l) { linenumber = l;}
