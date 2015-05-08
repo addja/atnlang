@@ -83,7 +83,7 @@ tests:
 		echo "" ; \
 		echo $$f ; \
 		echo "AST\tTrace\tOutput" ; \
-		$(EXEC) $$f -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace > $(TEMPDIR)/temp.out ; \
+		$(EXEC) $$f -ast $(TEMPDIR)/temp.ast -trace $(TEMPDIR)/temp.trace -parse $(TEST)/freeling.txt > $(TEMPDIR)/temp.out ; \
 		diff -bB $$f.ast $(TEMPDIR)/temp.ast; \
 		if [ $$? -eq 0 ] ; then \
 			printf "OK\t" ; \

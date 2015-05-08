@@ -1,0 +1,4 @@
+main() <entry point>
+|   a1() <line 14>
+|   return true <line 7>
+return <line 7>

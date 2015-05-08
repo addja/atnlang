@@ -12,12 +12,13 @@ public class ATNInterp  {
 
     public ATNInterp (ATNTree t, Interp interp) {
         node2Tree = new HashMap<String,ATNTree>();
+        ATNTree node_list = t.getChild(1);
 
         for (int i = 0; i < t.getChildCount(); i++) {
-            createNode(t.getChild(i));
+            createNode(node_list.getChild(i));
         }
-
-        startingNode = t.getChild(0).getChild(0).getText();
+   
+        startingNode = node_list.getChild(0).getChild(0).getText();
         tree = t;
         this.interp = interp;
     }

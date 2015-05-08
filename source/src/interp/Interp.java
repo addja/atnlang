@@ -137,7 +137,7 @@ public class Interp {
                     if (ATNname2Tree.containsKey(name)) {
                         throw new RuntimeException("Multiple definitions of atn " + name);
                     }
-                    ATNname2Tree.put(name, new ATNInterp(f.getChild(1), this));
+                    ATNname2Tree.put(name, new ATNInterp(f, this));
                     break;
 
                 default:
@@ -204,7 +204,7 @@ public class Interp {
         ArrayList<Data> Arg_values = listArguments(f, args, flag);
 
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(f, Arg_values);
+        if (trace != null) traceFunctionCall(f, Arg_values, flag);
         
         // List of parameters of the callee
         ATNTree p = f.getChild(1);
@@ -229,7 +229,7 @@ public class Interp {
         if (result == null) result = new Data();
         
         // Dumps trace information
-        if (trace != null) traceReturn(f, result, Arg_values);
+        if (trace != null) traceReturn(f, result, Arg_values, flag);
         
         // Destroy the activation record
         Stack.popActivationRecord();
@@ -254,7 +254,7 @@ public class Interp {
         ArrayList<Data> Arg_values = new ArrayList<Data>();
 
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(atn.getTree(), Arg_values);
+        if (trace != null) traceFunctionCall(atn.getTree(), Arg_values, Caller.ATN);
 
         // Create the activation record in memory
         Stack.pushActivationRecord(atnname, lineNumber());
@@ -266,7 +266,7 @@ public class Interp {
         Data result = atn.Run();
 
         // Dumps trace information
-        if (trace != null) traceReturn(atn.getTree(), result, Arg_values);
+        if (trace != null) traceReturn(atn.getTree(), result, Arg_values, Caller.ATN);
         
         // If the result is null, then the function returns void
         if (!result.isBoolean()) {
@@ -671,20 +671,21 @@ public class Interp {
      * @param f AST of the function
      * @param arg_values Values of the parameters passed to the function
      */
-    private void traceFunctionCall(ATNTree f, ArrayList<Data> arg_values) {
+    private void traceFunctionCall(ATNTree f, ArrayList<Data> arg_values, Caller flag) {
         function_nesting++;
         ATNTree params = f.getChild(1);
         int nargs = params.getChildCount();
-        
         for (int i=0; i < function_nesting; ++i) trace.print("|   ");
 
         // Print function name and parameters
         trace.print(f.getChild(0) + "(");
-        for (int i = 0; i < nargs; ++i) {
-            if (i > 0) trace.print(", ");
-            ATNTree p = params.getChild(i);
-            if (p.getType() == ATNLexer.PREF) trace.print("&");
-            trace.print(p.getText() + "=" + arg_values.get(i));
+        if (flag == Caller.NORMAL) {
+            for (int i = 0; i < nargs; ++i) {
+                if (i > 0) trace.print(", ");
+                ATNTree p = params.getChild(i);
+                if (p.getType() == ATNLexer.PREF) trace.print("&");
+                trace.print(p.getText() + "=" + arg_values.get(i));
+            }
         }
         trace.print(") ");
         
@@ -701,7 +702,7 @@ public class Interp {
      * @param result The value of the result
      * @param arg_values The value of the parameters passed to the function
      */
-    private void traceReturn(ATNTree f, Data result, ArrayList<Data> arg_values) {
+    private void traceReturn(ATNTree f, Data result, ArrayList<Data> arg_values, Caller flag) {
         for (int i=0; i < function_nesting; ++i) trace.print("|   ");
         function_nesting--;
         trace.print("return");
@@ -710,10 +711,12 @@ public class Interp {
         // Print the value of arguments passed by reference
         ATNTree params = f.getChild(1);
         int nargs = params.getChildCount();
-        for (int i = 0; i < nargs; ++i) {
-            ATNTree p = params.getChild(i);
-            if (p.getType() == ATNLexer.PVALUE) continue;
-            trace.print(", &" + p.getText() + "=" + arg_values.get(i));
+        if (flag == Caller.NORMAL) {
+            for (int i = 0; i < nargs; ++i) {
+                ATNTree p = params.getChild(i);
+                if (p.getType() == ATNLexer.PVALUE) continue;
+                trace.print(", &" + p.getText() + "=" + arg_values.get(i));
+            }
         }
         
         trace.println(" <line " + lineNumber() + ">");
