@@ -11,10 +11,6 @@ import java.io.*;
 
 public class Interp {
 
-    /** Identifier for the interpreters */
-    public enum Caller {NORMAL, ATN;}
-
-
     /** Memory of the virtual machine. */
     private Stack Stack;
 
@@ -84,7 +80,7 @@ public class Interp {
 
     /** Runs the program by calling the main function without parameters. */
     public void Run() {
-        executeFunction ("main", null, Caller.NORMAL);
+        executeFunction ("main", null);
     }
 
     /** Returns the contents of the stack trace */
@@ -123,7 +119,7 @@ public class Interp {
                     break;
 
                 case ATNLexer.ASSIGN:
-                    Data value = evaluateExpression(f.getChild(1),Caller.NORMAL);
+                    Data value = evaluateExpression(f.getChild(1));
                     if (f.getChild(0).getType() == ATNLexer.BRACKET) {
                         String id = f.getChild(0).getChild(0).getText();
                         int index = f.getChild(0).getChild(1).getIntValue();
@@ -193,7 +189,7 @@ public class Interp {
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private Data executeFunction(String funcname, ATNTree args, Caller flag) {
+    private Data executeFunction(String funcname, ATNTree args) {
         // Get the AST of the function
         ATNTree f = FuncName2Tree.get(funcname);
         if (f == null) throw new RuntimeException(" function " + funcname + " not declared");
@@ -201,10 +197,10 @@ public class Interp {
         // Gather the list of arguments of the caller. This function
         // performs all the checks required for the compatibility of
         // parameters.
-        ArrayList<Data> Arg_values = listArguments(f, args, flag);
+        ArrayList<Data> Arg_values = listArguments(f, args);
 
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(f, Arg_values, flag);
+        if (trace != null) traceFunctionCall(f, Arg_values);
         
         // List of parameters of the callee
         ATNTree p = f.getChild(1);
@@ -223,13 +219,13 @@ public class Interp {
         }
 
         // Execute the instructions
-        Data result = executeListInstructions(f.getChild(2), flag);
+        Data result = executeListInstructions(f.getChild(2));
 
         // If the result is null, then the function returns void
         if (result == null) result = new Data();
         
         // Dumps trace information
-        if (trace != null) traceReturn(f, result, Arg_values, flag);
+        if (trace != null) traceReturn(f, result, Arg_values);
         
         // Destroy the activation record
         Stack.popActivationRecord();
@@ -254,7 +250,7 @@ public class Interp {
         ArrayList<Data> Arg_values = new ArrayList<Data>();
 
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(atn.getTree(), Arg_values, Caller.ATN);
+        if (trace != null) traceFunctionCall(atn.getTree(), Arg_values);
 
         // Create the activation record in memory
         Stack.pushActivationRecord(atnname, lineNumber());
@@ -266,7 +262,7 @@ public class Interp {
         Data result = atn.Run();
 
         // Dumps trace information
-        if (trace != null) traceReturn(atn.getTree(), result, Arg_values, Caller.ATN);
+        if (trace != null) traceReturn(atn.getTree(), result, Arg_values);
         
         // If the result is null, then the function returns void
         if (!result.isBoolean()) {
@@ -287,12 +283,12 @@ public class Interp {
      * @return The data returned by the instructions (null if no return
      * statement has been executed).
      */
-    public Data executeListInstructions(ATNTree t,Caller flag) {
+    public Data executeListInstructions(ATNTree t) {
         assert t != null;
         Data result = null;
         int ninstr = t.getChildCount();
         for (int i = 0; i < ninstr; ++i) {
-            result = executeInstruction(t.getChild(i),flag);
+            result = executeInstruction(t.getChild(i));
             if (result != null) return result;
         }
         return null;
@@ -306,7 +302,7 @@ public class Interp {
      * non-null only if a return statement is executed or a block
      * of instructions executing a return.
      */
-    private Data executeInstruction (ATNTree t, Caller flag) {
+    private Data executeInstruction (ATNTree t) {
         assert t != null;
         
         setLineNumber(t);
@@ -317,7 +313,7 @@ public class Interp {
 
             // Assignment
             case ATNLexer.ASSIGN:
-                value = evaluateExpression(t.getChild(1),flag);
+                value = evaluateExpression(t.getChild(1));
                 if (t.getChild(0).getType() == ATNLexer.BRACKET) {
                     String id = t.getChild(0).getChild(0).getText();
                     int index = t.getChild(0).getChild(1).getIntValue();
@@ -328,30 +324,27 @@ public class Interp {
 
             // If-then-else
             case ATNLexer.IF:
-                value = evaluateExpression(t.getChild(0),flag);
+                value = evaluateExpression(t.getChild(0));
                 checkBoolean(value);
-                if (value.getBooleanValue()) return executeListInstructions(t.getChild(1),flag);
+                if (value.getBooleanValue()) return executeListInstructions(t.getChild(1));
                 // Is there else statement ?
-                if (t.getChildCount() == 3) return executeListInstructions(t.getChild(2),flag);
+                if (t.getChildCount() == 3) return executeListInstructions(t.getChild(2));
                 return null;
 
             // While
             case ATNLexer.WHILE:
                 while (true) {
-                    value = evaluateExpression(t.getChild(0),flag);
+                    value = evaluateExpression(t.getChild(0));
                     checkBoolean(value);
                     if (!value.getBooleanValue()) return null;
-                    Data r = executeListInstructions(t.getChild(1),flag);
+                    Data r = executeListInstructions(t.getChild(1));
                     if (r != null) return r;
                 }
 
             // Return
             case ATNLexer.RETURN:
-                if (flag == Caller.ATN) {
-                    throw new RuntimeException ("Return statement can't be called from an atn");
-                }
                 if (t.getChildCount() != 0) {
-                    return evaluateExpression(t.getChild(0),flag);
+                    return evaluateExpression(t.getChild(0));
                 }
                 return new Data(); // No expression: returns void data
 
@@ -377,14 +370,14 @@ public class Interp {
                 String s = "";
                 for (int i = 0; i < n; ++i) {
                     // Write an expression
-                    s += evaluateExpression(t.getChild(i),flag).toString();
+                    s += evaluateExpression(t.getChild(i)).toString();
                 }
                 System.out.format(s);
                 return null;
 
             // Function call
             case ATNLexer.FUNCALL:
-                executeFunction(t.getChild(0).getText(), t.getChild(1),flag);
+                executeFunction(t.getChild(0).getText(), t.getChild(1));
                 return null;
 
             case ATNLexer.ATNCALL:
@@ -407,7 +400,7 @@ public class Interp {
      * @return The value of the expression.
      */
      
-    public Data evaluateExpression(ATNTree t, Caller flag) {
+    public Data evaluateExpression(ATNTree t) {
         assert t != null;
 
         int previous_line = lineNumber();
@@ -419,10 +412,6 @@ public class Interp {
         switch (type) {
             // A hash from atn
             case ATNLexer.HASH:
-                if (flag == Caller.NORMAL) {
-                    throw new RuntimeException ("Atn input special option can't be called"
-                        + "outside an atn");
-                }
                 int i = t.getChild(0).getIntValue();
                 if (i >= inputToParse.get(parseIndex).size()){
                      throw new RuntimeException ("Index " + i + " out of bounds in the # tuple");
@@ -454,7 +443,7 @@ public class Interp {
                 break;
             // A function call. Checks that the function returns a result.
             case ATNLexer.FUNCALL:
-                value = executeFunction(t.getChild(0).getText(), t.getChild(1),flag);
+                value = executeFunction(t.getChild(0).getText(), t.getChild(1));
                 assert value != null;
                 if (value.isVoid()) {
                     throw new RuntimeException ("function expected to return a value");
@@ -487,7 +476,7 @@ public class Interp {
         }
         
         // Unary operators
-        value = evaluateExpression(t.getChild(0),flag);
+        value = evaluateExpression(t.getChild(0));
         if (t.getChildCount() == 1) {
             switch (type) {
                 case ATNLexer.PLUS:
@@ -517,7 +506,7 @@ public class Interp {
             case ATNLexer.LE:
             case ATNLexer.GT:
             case ATNLexer.GE:
-                value2 = evaluateExpression(t.getChild(1),flag);
+                value2 = evaluateExpression(t.getChild(1));
                 if (value.getType() != value2.getType()) {
                   throw new RuntimeException ("Incompatible types in relational expression");
                 }
@@ -526,7 +515,7 @@ public class Interp {
 
             // Arithmetic operators
             case ATNLexer.PLUS:
-                value2 = evaluateExpression(t.getChild(1),flag);
+                value2 = evaluateExpression(t.getChild(1));
                 if (value.isInteger()) {
                     checkInteger(value); checkInteger(value2);
                 }
@@ -537,7 +526,7 @@ public class Interp {
             case ATNLexer.MUL:
             case ATNLexer.DIV:
             case ATNLexer.MOD:
-                value2 = evaluateExpression(t.getChild(1),flag);
+                value2 = evaluateExpression(t.getChild(1));
                 checkInteger(value); checkInteger(value2);
                 value.evaluateArithmetic(type, value2);
                 break;
@@ -548,7 +537,7 @@ public class Interp {
                 // The first operand is evaluated, but the second
                 // is deferred (lazy, short-circuit evaluation).
                 checkBoolean(value);
-                value = evaluateBoolean(type, value, t.getChild(1),flag);
+                value = evaluateBoolean(type, value, t.getChild(1));
                 break;
 
             default: assert false; // Should never happen
@@ -568,7 +557,7 @@ public class Interp {
      * @param t AST node of the second operand.
      * @return An Boolean data with the value of the expression.
      */
-    private Data evaluateBoolean(int type, Data v, ATNTree t, Caller flag) {
+    private Data evaluateBoolean(int type, Data v, ATNTree t) {
         // Boolean evaluation with short-circuit
 
         switch (type) {
@@ -586,7 +575,7 @@ public class Interp {
         }
 
         // Return the value of the second expression
-        v = evaluateExpression(t,flag);
+        v = evaluateExpression(t);
         checkBoolean(v);
         return v;
     }
@@ -629,7 +618,7 @@ public class Interp {
      * @return The list of evaluated arguments.
      */
      
-    private ArrayList<Data> listArguments(ATNTree AstF, ATNTree args, Caller flag) {
+    private ArrayList<Data> listArguments(ATNTree AstF, ATNTree args) {
         if (args != null) setLineNumber(args);
         ATNTree pars = AstF.getChild(1);   // Parameters of the function
         
@@ -653,7 +642,7 @@ public class Interp {
             setLineNumber(a);
             if (p.getType() == ATNLexer.PVALUE) {
                 // Pass by value: evaluate the expression
-                Params.add(i,evaluateExpression(a,flag));
+                Params.add(i,evaluateExpression(a));
             } else {
                 // Pass by reference: check that it is a variable
                 if (a.getType() != ATNLexer.ID) {
@@ -674,7 +663,7 @@ public class Interp {
      * @param f AST of the function
      * @param arg_values Values of the parameters passed to the function
      */
-    private void traceFunctionCall(ATNTree f, ArrayList<Data> arg_values, Caller flag) {
+    private void traceFunctionCall(ATNTree f, ArrayList<Data> arg_values) {
         function_nesting++;
         ATNTree params = f.getChild(1);
         int nargs = params.getChildCount();
@@ -682,7 +671,7 @@ public class Interp {
 
         // Print function name and parameters
         trace.print(f.getChild(0) + "(");
-        if (flag == Caller.NORMAL) {
+        if (f.getType() != ATNLexer.ATN) {
             for (int i = 0; i < nargs; ++i) {
                 if (i > 0) trace.print(", ");
                 ATNTree p = params.getChild(i);
@@ -705,7 +694,7 @@ public class Interp {
      * @param result The value of the result
      * @param arg_values The value of the parameters passed to the function
      */
-    private void traceReturn(ATNTree f, Data result, ArrayList<Data> arg_values, Caller flag) {
+    private void traceReturn(ATNTree f, Data result, ArrayList<Data> arg_values) {
         for (int i=0; i < function_nesting; ++i) trace.print("|   ");
         function_nesting--;
         trace.print("return");
@@ -714,7 +703,7 @@ public class Interp {
         // Print the value of arguments passed by reference
         ATNTree params = f.getChild(1);
         int nargs = params.getChildCount();
-        if (flag == Caller.NORMAL) {
+        if (f.getType() != ATNLexer.ATN) {
             for (int i = 0; i < nargs; ++i) {
                 ATNTree p = params.getChild(i);
                 if (p.getType() == ATNLexer.PVALUE) continue;

@@ -38,7 +38,7 @@ public class ATNInterp  {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             int index_backup = interp.getParseIndex();
             ATNTree arc = arc_list.getChild(i);
-            if (interp.evaluateExpression(arc.getChild(0), Interp.Caller.ATN).getBooleanValue()) {
+            if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
                 executeAfterArc(arc.getChild(2), name + String.valueOf(i));
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 interp.forwardParseIndex();
@@ -53,7 +53,7 @@ public class ATNInterp  {
     private void executeAfterArc (ATNTree t, String arcName) {
         interp.getStack().pushActivationRecord(arcName, interp.lineNumber());
         interp.setLineNumber(t);
-        Data result = interp.executeListInstructions(t, Interp.Caller.ATN);
+        Data result = interp.executeListInstructions(t);
         if (result != null) throw new RuntimeException("Arcs cannot have return keyword");
         interp.getStack().popActivationRecord();
     }
