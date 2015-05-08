@@ -9,7 +9,8 @@ import org.antlr.stringtemplate.*;
 import org.apache.commons.cli.*; // Command Language Interface
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
+
 
 // Parser and Interpreter
 import parser.*;
@@ -28,6 +29,8 @@ public class ATN {
     private static String infile = null;
     /** Name of the file representing the AST. */
     private static String astfile = null;
+    /** Name of the file to read the text to Parse  */
+    private static String parsefile = null;
     /** Flag indicating that the AST must be written in dot format. */
     private static boolean dotformat = false;
     /** Name of the file storing the trace of the program. */
@@ -88,7 +91,14 @@ public class ATN {
             output.close();
         }
 
-        ArrayList<ArrayList<String>> freelingInput = readInput();
+        String x = "";
+        ArrayList<String> aux = new ArrayList<String>();
+        aux.add(x);
+        ArrayList<ArrayList<String>> freelingInput = new ArrayList<ArrayList<String>>();
+        freelingInput.add(aux);
+        if (parsefile != null) {
+             freelingInput = readInput();
+        }
 
         // Start interpretation (only if execution required)
         if (execute) {
@@ -116,17 +126,21 @@ public class ATN {
     }
 
     /**
-     * Reads input to parse
+     * Read the input to parse from the file indicated with -parse flag
+     * in FreeLing format.
      */
     private static ArrayList<ArrayList<String>> readInput() {
-        Scanner scanner = new Scanner(System.in);
-        String line = scanner.nextLine();
-        while (scanner.hasNextLine()) {
-            System.out.println(line);
-            line = scanner.nextLine();
+        CharStream chrstrm = null;
+        try {
+            chrstrm = new ANTLRFileStream(parsefile);
+        } catch (IOException e) {
+            System.err.println ("Error: file " + parsefile + " could not be opened.");
+            System.exit(1);
         }
-        System.exit(0);
-        return null;
+        ArrayList<String> a = new ArrayList<String>(Arrays.asList(chrstrm.toString().split("\n")));        
+        ArrayList<ArrayList<String>> r = new ArrayList<ArrayList<String>>();
+        for (String s:a) r.add(new ArrayList<String>(Arrays.asList(s.split(" "))));
+        return r;
     }
 
 
@@ -151,6 +165,11 @@ public class ATN {
                         .hasArg()
                         .withDescription ("write a trace of function calls during the execution of the program")
                         .create ("trace");
+        Option parse = OptionBuilder
+                        .withArgName ("file")
+                        .hasArg()
+                        .withDescription ("file to read the FreeLing generated output")
+                        .create("parse");
                                        
         Options options = new Options();
         options.addOption(help);
@@ -158,11 +177,11 @@ public class ATN {
         options.addOption(ast);
         options.addOption(trace);
         options.addOption(noexec);
+        options.addOption(parse);
         CommandLineParser clp = new GnuParser();
         CommandLine line = null;
 
         String cmdline = "ATN [options] file";
-        
         
         // Parse the options
         try {
@@ -193,6 +212,9 @@ public class ATN {
         
         // Option -noexec
         if (line.hasOption ("noexec")) execute = false;
+
+        // Option -parse
+        if (line.hasOption ("parse")) parsefile = line.getOptionValue("parse");
 
         // Remaining arguments (the input file)
         String[] files = line.getArgs();
