@@ -85,6 +85,11 @@ public class Interp {
     public String getStackTrace(int nitems) {
         return Stack.getStackTrace(lineNumber(), nitems);
     }
+
+    /** Returns the interpreter stack */
+    public Stack getStack() {
+        return Stack;
+    }
     
     /**
      * Gathers information from the AST and creates the map from
@@ -121,7 +126,7 @@ public class Interp {
                     if (ATNname2Tree.containsKey(name)) {
                         throw new RuntimeException("Multiple definitions of atn " + name);
                     }
-                    ATNname2Tree.put(name, new ATNInterp(f.getChild(1)));
+                    ATNname2Tree.put(name, new ATNInterp(f.getChild(1), this));
                     break;
 
                 default:
@@ -239,7 +244,7 @@ public class Interp {
         Stack.defineVariable("text", Arg_values.get(0));
 
         // Execute the instructions
-        Data result = atn.Run(text.getStringValue(), Stack);
+        Data result = atn.Run(text.getStringValue());
 
         // If the result is null, then the function returns void
         if (result == null) result = new Data();
@@ -261,7 +266,7 @@ public class Interp {
      * @return The data returned by the instructions (null if no return
      * statement has been executed).
      */
-    private Data executeListInstructions (ATNTree t) {
+    public Data executeListInstructions (ATNTree t) {
         assert t != null;
         Data result = null;
         int ninstr = t.getChildCount();
@@ -378,7 +383,7 @@ public class Interp {
      * @return The value of the expression.
      */
      
-    private Data evaluateExpression(ATNTree t) {
+    public Data evaluateExpression(ATNTree t) {
         assert t != null;
 
         int previous_line = lineNumber();

@@ -75,6 +75,16 @@ public class Stack {
         StackTraceATN = new LinkedList<StackTraceItem>();
     }
 
+    /** Returns the Global variables Hashmap */
+    public HashMap<String,Data> getGlobalVars() {
+        return Global;
+    }
+
+    /** Returns the Global variables Hashmap */
+    public void setGlobalVars(HashMap<String,Data> Global) {
+        this.Global = Global;
+    }
+
     /** Defines the value of a variable. If the variable does not
      * exist, it is created. If it exists, the value and type of
      * the variable are re-defined.

@@ -9,8 +9,9 @@ public class ATNInterp  {
     private String startingNode;
     private ATNTree tree;
     private String text;
+    private Interp interp;
 
-    public ATNInterp (ATNTree t) {
+    public ATNInterp (ATNTree t, Interp interp) {
         node2Tree = new HashMap<String,ATNTree>();
 
         for (int i = 0; i < t.getChildCount(); i++) {
@@ -19,11 +20,12 @@ public class ATNInterp  {
 
         startingNode = t.getChild(0).getChild(0).getText();
         tree = t;
+        this.interp = interp;
     }
 
     public ATNTree getTree() { return tree; }
 
-    public Data Run (String text, Stack stack) {
+    public Data Run (String text) {
         this.text = text;
         return new Data(executeNode(startingNode));
     }
@@ -37,8 +39,8 @@ public class ATNInterp  {
 
         for (int i = 0; i < arc_list.getChildCount(); ++i) {
             ATNTree arc = arc_list.getChild(i);
-            if (evaluateExpression(arc.getChild(0))) {
-                Data r = executeListInstructions(arc.getChild(2));
+            if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
+                Data r = interp.executeListInstructions(arc.getChild(2));
                 if (!r.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 if (executeNode(nextNode)) return true;
