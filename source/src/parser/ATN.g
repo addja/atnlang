@@ -20,9 +20,6 @@ tokens {
     BOOLEAN;    // Boolean atom (for Boolean constants "true" or "false")
     PVALUE;     // Parameter by value in the list of parameters
     PREF;       // Parameter by reference in the list of parameters
-    HASHCODE;   // Especial token for the atn input pointer
-    HASHTEXT;   // Especial token for the atn input pointer
-    HASHBASE;   // Especial token for the atn input pointer
     ARRAYLENGTH; 
 }
 
@@ -155,9 +152,7 @@ atom    :   subatom
         |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
         |   funcall
         |   '('! expr ')'!
-        |   '#.code' -> HASHCODE
-        |   '#.base' -> HASHBASE
-        |   '#.text' -> HASHTEXT
+        |   HASH^ INT
         ;
 
 subatom :   ID (BRACKET^ expr ']'!)?
@@ -202,6 +197,7 @@ PRINT   : 'print' ;
 JUMP    : 'goto' ;
 TRUE    : 'true' ;
 FALSE   : 'false';
+HASH    : '#';
 ID      :   ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 INT     :   '0'..'9'+ ;
 
