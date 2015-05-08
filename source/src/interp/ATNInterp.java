@@ -34,21 +34,18 @@ public class ATNInterp  {
         ATNTree node = node2Tree.get(name);
         ATNTree arc_list = node.getChild(1);
 
-        //TODO: what happens if node has no arcs?
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
 
         for (int i = 0; i < arc_list.getChildCount(); ++i) {
+            HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             ATNTree arc = arc_list.getChild(i);
-            if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
-                Data r = interp.executeListInstructions(arc.getChild(2));
+            if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue(), interp.Caller.ATN) {
+                Data r = interp.executeListInstructions(arc.getChild(2), interp.Caller.ATN);
                 if (!r.isVoid()) throw new RuntimeException("Arcs cannot have return keyword");
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 if (executeNode(nextNode)) return true;
-
-                // TODO: desfer el executeListInstructions -> push pop activation record + copia vars globals
-                // TODO: cal modificar / copiar executeInstructions per detectar quan HASHCODE o altres apareixen
-                // i executar el Freeling correctament
             }
+            interp.getStack().setGlobalVars(global_backup);
         }
         return false;
     }
