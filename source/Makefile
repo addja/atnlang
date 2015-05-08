@@ -55,7 +55,7 @@ ALL_SRC =		$(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 
 TESTS_SRC := 	$(wildcard $(TEST)/*.atn)
 
-all: compile exec tests
+all: compile exec
 
 compile:
 	java -jar $(LIB_ANTLR) -o $(PARSER) $(GRAMMAR)

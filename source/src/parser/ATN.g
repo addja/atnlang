@@ -14,8 +14,10 @@ tokens {
     ASSIGN;     // Assignment instruction
     PARAMS;     // List of parameters in the declaration of a function
     FUNCALL;    // Function call
+    ATNCALL;    // ATN function call
     ARGLIST;    // List of arguments passed in a function call
     LIST_INSTR; // Block of instructions
+    NODELIST;   // List of nodes of an ATN
     ARC_LIST;   // List of arc definitions
     BOOLEAN;    // Boolean atom (for Boolean constants "true" or "false")
     PVALUE;     // Parameter by value in the list of parameters
@@ -38,9 +40,11 @@ prog    : utilities+ EOF -> ^(PROGRAM utilities+)
         
 // An utility can be a function, a variable or an atn   
 utilities   : DEF^ ID params '{'! block_instructions '}'!
-            | ATN^ ID '{'! node+ '}'!
+            | ATN^ ID '{'! node_list '}'!
             | assign ';'!
-            | funcall ';'!
+            ;
+
+node_list   : node+ -> ^(NODELIST node+)
             ;
 
 node        : NODE^ ID arc_list
@@ -93,6 +97,7 @@ instruction
         |   while_stmt      // while statement
         |   for_stmt        // for statement
         |   funcall         // Call to a procedure (no result produced)
+        |   atncall         // Call to a procedure (fail if returns false)
         |   return_stmt     // Return statement
         |   print           // Write a string or an expression
         |                   // Nothing
@@ -151,8 +156,9 @@ atom    :   subatom
         |   STRING
         |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
         |   funcall
+        |   atncall     //calls atn and saves value on var
         |   '('! expr ')'!
-        |   HASH^ INT
+        |   HASH^ '.'! INT
         ;
 
 subatom :   ID (BRACKET^ expr ']'!)?
@@ -161,6 +167,10 @@ subatom :   ID (BRACKET^ expr ']'!)?
         
 // A function call has a lits of arguments in parenthesis (possibly empty)
 funcall :   ID '(' expr_list? ')' -> ^(FUNCALL ID ^(ARGLIST expr_list?))
+        ;
+
+// A function call has a lits of arguments in parenthesis (possibly empty)
+atncall :   'atn(' ID ')' -> ^(ATNCALL ID)
         ;
 
 // A list of expressions separated by commas

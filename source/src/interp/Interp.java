@@ -62,11 +62,12 @@ public class Interp {
         assert T != null;
         inputToParse = input;
         parseIndex = 0;
+
         Stack = new Stack(); // Creates the memory of the virtual machine
         PreProcessAST(T); // Some internal pre-processing ot the AST
         ParseProgram(T);  // Creates the table to map function names into AST nodes
         // Initializes the standard input of the program
-        
+
         /** TODO: input extention
         * stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
         */
@@ -387,7 +388,7 @@ public class Interp {
                 executeFunction(t.getChild(0).getText(), t.getChild(1),flag);
                 return null;
 
-            case ATNLexer.ATN:
+            case ATNLexer.ATNCALL:
                 executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1),flag));
                 // TODO : interrupt execution or raise exception when a void
                 // atn is executed and fails
@@ -457,7 +458,7 @@ public class Interp {
                     throw new RuntimeException ("function expected to return a value");
                 }
                 break;
-            case ATNLexer.ATN:
+            case ATNLexer.ATNCALL:
                 value = executeATN(t.getChild(0).getText(), evaluateExpression(t.getChild(1), flag));
                 assert value != null;
                 if (value.isVoid()) {
