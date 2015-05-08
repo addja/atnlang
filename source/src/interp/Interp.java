@@ -12,7 +12,7 @@ import java.io.*;
 public class Interp {
 
     /** Identifier for the interpreters */
-    public enum Caller {NORMAL, ATN};
+    public enum Caller {NORMAL, ATN;}
 
 
     /** Memory of the virtual machine. */
