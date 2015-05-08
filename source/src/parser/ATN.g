@@ -51,7 +51,7 @@ node        : NODE^ ID arc_list
             ;
 
 arc_list    : '{' arc+ '}' -> ^(ARC_LIST arc+) 
-            | (ACCEPT^)? ';'!  //TODO: A node can have no arcs
+            | ACCEPT^ ';'! 
             ;
 
 arc        : ARC^ '('! expr ')'! arc_jump list_instructions
