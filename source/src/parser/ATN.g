@@ -84,7 +84,6 @@ list_instructions
 // A block of instructions, all of them gouped in a subtree
 block_instructions
         :  inst_comma+ -> ^(LIST_INSTR inst_comma+)
-        |                   //Empty block
         ;
 
 inst_comma
