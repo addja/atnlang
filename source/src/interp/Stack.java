@@ -22,6 +22,9 @@ public class Stack {
     /** Global variable hasmap */
     private HashMap<String,Data> Global;
 
+    /** Atn local vars */
+    private HashMap<String,Data> AtnVars;
+
     /**
      * Class to represent an item of the Stack trace.
      * For each function call, the function name and
@@ -43,6 +46,7 @@ public class Stack {
     
     /** Constructor of the memory */
     public Stack() {
+        AtnVars = new HashMap<String,Data>();
         Stack = new LinkedList<HashMap<String,Data>>();
         CurrentAR = null;
         StackTrace = new LinkedList<StackTraceItem>();
@@ -94,8 +98,12 @@ public class Stack {
     public void defineVariable(String name, Data value) {
         Data d = CurrentAR.get(name);
         if (d == null) {
-            d = Global.get(name);
-            if (d == null) CurrentAR.put(name, value); // New definition
+            d = AtnVars.get(name);
+            if (d == null) {
+                d = Global.get(name);
+                if (d == null) CurrentAR.put(name, value); // New definition
+                else d.setData(value);
+            }
             else d.setData(value);
         }
         else d.setData(value); // Use the previous data 
@@ -124,11 +132,49 @@ public class Stack {
     public void defineArrayVariable(String name, Data value, int index) {
         Data d = CurrentAR.get(name);
         if (d == null) {
-            Data array;
-            if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
-            else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
-            else array = new Data(index,value.getStringValue());
-            CurrentAR.put(name, array); 
+            d = AtnVars.get(name);
+            if (d == null) {
+                d = Global.get(name);
+                if (d == null) {
+                    Data array;
+                    if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
+                    else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
+                    else array = new Data(index,value.getStringValue());
+                    CurrentAR.put(name, array);
+                }
+                else {
+                    if (d.getArrayType() != value.getType()){
+                        Data newarr;
+                        if (value.isBoolean())
+                            newarr = new Data(index, value.getBooleanValue());
+                        else if (value.isInteger())
+                            newarr = new Data(index, value.getIntegerValue());
+                        else newarr = new Data(index, value.getStringValue());
+                        d.setData(newarr);
+                    }
+                    else { // same type of data
+                        if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
+                        else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
+                        else d.setValue(index,value.getStringValue());
+                    }
+                }
+            }
+            else {
+                if (d.getArrayType() != value.getType()){
+                Data newarr;
+                if (value.isBoolean())
+                    newarr = new Data(index, value.getBooleanValue());
+                else if (value.isInteger())
+                    newarr = new Data(index, value.getIntegerValue());
+                else newarr = new Data(index, value.getStringValue());
+                d.setData(newarr);
+                }
+                else { // same type of data
+                    if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
+                    else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
+                    else d.setValue(index,value.getStringValue());
+                }
+            } 
         }
         else {
             if (d.getArrayType() != value.getType()){
@@ -183,6 +229,7 @@ public class Stack {
     }
 
 
+
     /** Gets the value of the variable. The value is represented as
      * a Data object. In this way, any modification of the object
      * implicitly modifies the value of the variable.
@@ -192,10 +239,14 @@ public class Stack {
     public Data getVariable(String name) {
         Data v = Global.get(name);
         if (v == null) {
-            v = CurrentAR.get(name);
+            v = AtnVars.get(name);
             if (v == null) {
-                throw new RuntimeException ("Variable " + name + " not defined");
+                v = CurrentAR.get(name);
+                if (v == null) {
+                    throw new RuntimeException ("Variable " + name + " not defined");
+                }
             }
+            return v;
         }
         return v;
     }
@@ -272,6 +323,10 @@ public class Stack {
         }
         return trace.toString();
     }
+
+    public void pushAtnVars(HashMap<String,Data> a) { AtnVars = a; }
+
+    public void popAtnVars() { AtnVars = new HashMap<String,Data>(); }
 
 }
     
