@@ -97,6 +97,10 @@ public class Interp {
     public Stack getStack() {
         return Stack;
     }
+
+    public boolean textParsed() {
+        return parseIndex == inputToParse.size();
+    }
     
     /**
      * Gathers information from the AST and creates the map from
