@@ -93,7 +93,11 @@ public class Stack {
      */
     public void defineVariable(String name, Data value) {
         Data d = CurrentAR.get(name);
-        if (d == null) CurrentAR.put(name, value); // New definition
+        if (d == null) {
+            d = Global.get(name);
+            if (d == null) CurrentAR.put(name, value); // New definition
+            else d.setData(value);
+        }
         else d.setData(value); // Use the previous data 
     }
 

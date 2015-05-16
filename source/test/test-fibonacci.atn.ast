@@ -1,0 +1,1 @@
+(PROGRAM (def fib (PARAMS n) (LIST_INSTR (:= fib 0) (:= next 1) (:= i 0) (while (< i n) (LIST_INSTR (print fib " ") (:= aux fib) (:= fib next) (:= next (+ aux next)) (:= i (+ i 1)))))) (def main PARAMS (LIST_INSTR (FUNCALL fib (ARGLIST 23)) (print "%n"))))
