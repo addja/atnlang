@@ -65,7 +65,8 @@ public class ATN {
         ATNParser.prog_return result = null;
         try {
             result = parser.prog();
-        } catch (Exception e) {} // Just catch the exception (nothing to do)
+        } catch (Exception e) {
+        } // Just catch the exception (nothing to do)
         
         // Check for parsing errors
         int nerrors = parser.getNumberOfSyntaxErrors();

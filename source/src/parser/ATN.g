@@ -77,30 +77,26 @@ param   :   '&' id=ID -> ^(PREF[$id,$id.text])
 
 // A list of instructions, either enclosed or not
 list_instructions
-        :  inst_comma -> ^(LIST_INSTR inst_comma)
+        :  instruction -> ^(LIST_INSTR instruction)
+        |  ';'!
         |  '{'! block_instructions '}'!
         ;
 
 // A block of instructions, all of them gouped in a subtree
 block_instructions
-        :  inst_comma+ -> ^(LIST_INSTR inst_comma+)
-        ;
-
-inst_comma
-        : instruction ';'!
+        :  instruction+ -> ^(LIST_INSTR instruction+)
         ;
 
 // The different types of instructions
 instruction
-        :   assign          // Assignment
-        |   ite_stmt        // if-then-else
-        |   while_stmt      // while statement
-        |   for_stmt        // for statement
-        |   funcall         // Call to a procedure (no result produced)
-        |   atncall         // Call to a procedure (fail if returns false)
-        |   return_stmt     // Return statement
-        |   print           // Write a string or an expression
-        |                   // Nothing
+        :   assign ';'!         // Assignment
+        |   ite_stmt            // if-then-else
+        |   while_stmt          // while statement
+        |   for_stmt            // for statement
+        |   funcall ';'!        // Call to a procedure (no result produced)
+        |   atncall ';'!        // Call to a procedure (fail if returns false)
+        |   return_stmt ';'!    // Return statement
+        |   print ';'!          // Write a string or an expression
         ;
   
 // Assignment
