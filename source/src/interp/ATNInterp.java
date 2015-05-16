@@ -50,7 +50,7 @@ public class ATNInterp  {
         ATNTree arc_list = node2Tree.get(name);
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
 
-        for (int i = 0; i < arc_list.getChildCount(); ++i) {
+        for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             int index_backup = interp.getParseIndex();
             ATNTree arc = arc_list.getChild(i);
