@@ -11,7 +11,7 @@ package interp;
  */
 
 import parser.*;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
 public class Data {
     /** Types of data */
@@ -126,6 +126,12 @@ public class Data {
         return array.size(); 
     }
 
+    /** Returns the size of the string contained **/
+    public int getStringLength(){ 
+        if (value == null) return 0;
+        return value.length(); 
+    }
+
     /**
      * Gets the value of an integer data. The method asserts that
      * the data is an integer.
@@ -151,6 +157,15 @@ public class Data {
     public String getStringValue() {
         assert type == Type.STRING;
         return value;
+    }
+
+    /**
+     * Gets the value of a String data. The method asserts that
+     * the data is a String.
+     */
+    public String getStringValue(int index) {
+        assert type == Type.STRING;
+        return String.valueOf(value.charAt(index));
     }
 
     /**
@@ -229,12 +244,23 @@ public class Data {
         array.set(index,String.valueOf(b ? 1:0));
     }
 
-    /** Defines a boolean value for the data array */
+    /** Defines a string value for the string array
+      * or accesses a particular string char
+      */
     public void setValue(int index, String s) { 
-        assert type == Type.ARRAY;
-        assert arrayType == Type.STRING;
-        ensureArrayCapacity(index);
-        array.set(index,s);
+        if (type == Type.ARRAY) {   // array access
+            assert arrayType == Type.STRING;
+            ensureArrayCapacity(index);
+            array.set(index,s);
+        }
+        else { //string char access
+            assert type == Type.STRING;
+            if (s.length() != 1)
+                throw new RuntimeException("Char assigments cannot contain more that 2 chars");
+            char chararray[] = value.toCharArray();
+            chararray[index] = s.charAt(0);
+            value = new String(chararray);
+        }
     }
 
     /** Copies the value from another data */

@@ -186,7 +186,7 @@ public class Stack {
                 else newarr = new Data(index, value.getStringValue());
                 d.setData(newarr);
             }
-            else { // same type of data
+            else { // value exists and same type of data
                 if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
                 else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
                 else d.setValue(index,value.getStringValue());

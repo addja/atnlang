@@ -316,8 +316,9 @@ public class Interp {
                 value = evaluateExpression(t.getChild(1));
                 if (t.getChild(0).getType() == ATNLexer.BRACKET) {
                     String id = t.getChild(0).getChild(0).getText();
-                    int index = t.getChild(0).getChild(1).getIntValue();
-                    Stack.defineArrayVariable (id, value, index);
+                    Data index = evaluateExpression(t.getChild(0).getChild(1));
+                    checkInteger(index);
+                    Stack.defineArrayVariable (id, value, index.getIntegerValue());
                 }
                 else Stack.defineVariable (t.getChild(0).getText(), value);
                 return null;
@@ -444,13 +445,17 @@ public class Interp {
             // An array value
             case ATNLexer.BRACKET:
                 String id = t.getChild(0).getText();
-                int index = t.getChild(1).getIntValue();
-                Data array = Stack.getVariable(id);
-                if (array.isBooleanArray()) 
-                    value = new Data(array.getBooleanArrayValue(index));
-                else if (array.isStringArray()) 
-                    value = new Data(array.getStringArrayValue(index));
-                else value = new Data(array.getIntegerArrayValue(index));
+                Data index = evaluateExpression(t.getChild(1));
+                checkInteger(index);
+                Data var = Stack.getVariable(id);
+                if (var.isBooleanArray()) 
+                    value = new Data(var.getBooleanArrayValue(index.getIntegerValue()));
+                else if (var.isStringArray()) 
+                    value = new Data(var.getStringArrayValue(index.getIntegerValue()));
+                else if (var.isIntegerArray())
+                    value = new Data(var.getIntegerArrayValue(index.getIntegerValue()));
+                else // it's a String
+                    value = new Data(var.getStringValue(index.getIntegerValue()));
                 break;
             // A function call. Checks that the function returns a result.
             case ATNLexer.FUNCALL:
@@ -470,8 +475,11 @@ public class Interp {
             // Request of array length
             case ATNLexer.ARRAYLENGTH:
                 Data temp = new Data(Stack.getVariable(t.getChild(0).getText()));
-                checkArray(temp);
-                value = new Data(temp.getArrayLength());
+                if (temp.isString()) value = new Data(temp.getStringLength());
+                else {
+                    checkArray(temp);
+                    value = new Data(temp.getArrayLength());
+                }
                 break;
             // String literal
             case ATNLexer.STRING:

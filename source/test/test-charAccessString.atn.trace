@@ -1,0 +1,4 @@
+main() <entry point>
+|   int(a=123) <line 25>
+|   return 123 <line 15>
+return <line 25>
