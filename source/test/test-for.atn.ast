@@ -1,0 +1,1 @@
+(PROGRAM (def main PARAMS (LIST_INSTR (for (:= i 0) (< i 100) (:= i (+ i 1)) (LIST_INSTR (print i "%n"))))))
