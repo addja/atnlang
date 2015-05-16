@@ -45,6 +45,7 @@ utilities   : DEF^ ID params '{'! block_instructions '}'!
             ;
 
 node_list   : node+ -> ^(NODELIST node+)
+            | assign ';'!
             ;
 
 node        : NODE^ ID arc_list
