@@ -302,7 +302,7 @@ public class Interp {
      * non-null only if a return statement is executed or a block
      * of instructions executing a return.
      */
-    private Data executeInstruction (ATNTree t) {
+    public Data executeInstruction (ATNTree t) {
         assert t != null;
         
         setLineNumber(t);

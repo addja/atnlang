@@ -15,7 +15,10 @@ public class ATNInterp  {
         ATNTree node_list = t.getChild(1);
 
         for (int i = 0; i < t.getChildCount(); i++) {
-            createNode(node_list.getChild(i));
+            ATNTree f = node_list.getChild(i);
+            if (f.getType() == ATNLexer.ASSIGN) 
+                interp.executeInstruction(f);
+            else createNode(node_list.getChild(i));
         }
    
         startingNode = node_list.getChild(0).getChild(0).getText();
