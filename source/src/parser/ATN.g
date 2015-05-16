@@ -105,7 +105,7 @@ assign  :   subatom eq=EQUAL expr -> ^(ASSIGN[$eq,":="] subatom expr)
         
 // if-then-else (else is optional)
 ite_stmt    :   IF^ '('! expr ')'! list_instructions
-                (ELSE! list_instructions)? 
+                (options {greedy=true;} : ELSE! list_instructions)? 
             ;
 
 // while statement
