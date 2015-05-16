@@ -51,6 +51,7 @@ node        : NODE^ ID arc_list
             ;
 
 arc_list    : '{' arc+ '}' -> ^(ARC_LIST arc+) 
+            | arc -> ^(ARC_LIST arc)
             | ACCEPT^ ';'! 
             ;
 
