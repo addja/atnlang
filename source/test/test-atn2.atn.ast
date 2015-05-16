@@ -1,0 +1,1 @@
+(PROGRAM (atn a1 (NODELIST (:= a 0) (node n1 (ARC_LIST (arc (== (# 0) ".") (goto n2) (LIST_INSTR (print a "%n") (print "not found any multiple of 3 or 2" "%n"))) (arc true (goto n1) (LIST_INSTR (:= b 1) (:= a (+ a b)) (print b " " a "%n"))))) (node n2 accept))) (def main PARAMS (LIST_INSTR (ATNCALL a1))))
