@@ -386,6 +386,17 @@ public class Interp {
                 // atn is executed and fails
                 return null;
 
+            case ATNLexer.FOR:
+                evaluateExpression(t.getChild(0));
+                while (true) {
+                    value = evaluateExpression(t.getChild(1));
+                    checkBoolean(value);
+                    if (!value.getBooleanValue()) return null;
+                    Data r = executeListInstructions(t.getChild(3));
+                    evaluateExpression(t.getChild(2));
+                    if (r != null) return r;
+                }
+
             default: assert false; // Should never happen
         }
 
