@@ -22,12 +22,13 @@ public class ATNInterp  {
                 Data value = interp.evaluateExpression(f.getChild(1));
                 if (f.getChild(0).getType() == ATNLexer.BRACKET) {
                     String id = f.getChild(0).getChild(0).getText();
-                    int index = f.getChild(0).getChild(1).getIntValue();
-                    defineArray(id, value, index);
+                    Data index = interp.evaluateExpression(f.getChild(0).getChild(1));
+                    if (!index.isInteger()) throw new RuntimeException("Array indexes can only be integers");
+                    defineArray(id, value, index.getIntegerValue());
                 }
                 else defineVariable(f.getChild(0).getText(), value);
             }
-            else if (f.getType() == ATNLexer.NODE) {
+            else {
                 if (startingNode == null) startingNode = node_list.getChild(i).getChild(0).getText();
                 createNode(node_list.getChild(i));
             }
