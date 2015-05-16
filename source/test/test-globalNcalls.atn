@@ -4,9 +4,12 @@ c = 22;
 def printer(a) {
 	print a;
 	print b;
-	print c;
+	print c, "%n";
+	c = c+23;
+	print c, "%n";
 }
 
 def main() {
 	printer("hola! %n");
+	print c, "%n";
 }

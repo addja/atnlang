@@ -1,0 +1,4 @@
+main() <entry point>
+|   fib(n=23) <line 15>
+|   return <line 10>
+return <line 16>

@@ -1,1 +1,1 @@
-(PROGRAM (:= b "adeu! %n") (:= c 22) (def printer (PARAMS a) (LIST_INSTR (print a) (print b) (print c))) (def main PARAMS (LIST_INSTR (FUNCALL printer (ARGLIST "hola! %n")))))
+(PROGRAM (:= b "adeu! %n") (:= c 22) (def printer (PARAMS a) (LIST_INSTR (print a) (print b) (print c "%n") (:= c (+ c 23)) (print c "%n"))) (def main PARAMS (LIST_INSTR (FUNCALL printer (ARGLIST "hola! %n")) (print c "%n"))))
