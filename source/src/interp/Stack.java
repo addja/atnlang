@@ -122,6 +122,33 @@ public class Stack {
     }
 
 
+	private void redefineArray (Data d, Data value, int index) {
+		if (d.getArrayType() != value.getType()){
+			Data newarr;
+			if (value.isBoolean())
+				newarr = new Data(index, value.getBooleanValue());
+			else if (value.isInteger())
+				newarr = new Data(index, value.getIntegerValue());
+			else newarr = new Data(index, value.getStringValue());
+			d.setData(newarr);
+		}
+		else { // same type of data
+			if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
+			else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
+			else d.setValue(index,value.getStringValue());
+		}
+	}
+
+	private void declareArray (Data d, Data value, int index, String name, int flag) {
+		Data array;
+		if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
+		else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
+		else array = new Data(index,value.getStringValue());
+
+		if (flag > 0) CurrentAR.put(name, array);
+		else Global.put(name, array); 
+	}
+
     /** Defines the value of an array variable. If the array does not
      * exist, it is created with null slots. If it exists, the value and type of
      * the variable are re-defined.
@@ -135,63 +162,12 @@ public class Stack {
             d = AtnVars.get(name);
             if (d == null) {
                 d = Global.get(name);
-                if (d == null) {
-                    Data array;
-                    if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
-                    else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
-                    else array = new Data(index,value.getStringValue());
-                    CurrentAR.put(name, array);
-                }
-                else {
-                    if (d.getArrayType() != value.getType()){
-                        Data newarr;
-                        if (value.isBoolean())
-                            newarr = new Data(index, value.getBooleanValue());
-                        else if (value.isInteger())
-                            newarr = new Data(index, value.getIntegerValue());
-                        else newarr = new Data(index, value.getStringValue());
-                        d.setData(newarr);
-                    }
-                    else { // same type of data
-                        if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
-                        else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
-                        else d.setValue(index,value.getStringValue());
-                    }
-                }
+                if (d == null) declareArray(d,value,index,name,1); 
+                else redefineArray(d,value,index); 
             }
-            else {
-                if (d.getArrayType() != value.getType()){
-                    Data newarr;
-                    if (value.isBoolean())
-                        newarr = new Data(index, value.getBooleanValue());
-                    else if (value.isInteger())
-                        newarr = new Data(index, value.getIntegerValue());
-                    else newarr = new Data(index, value.getStringValue());
-                    d.setData(newarr);
-                }
-                else { // same type of data
-                    if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
-                    else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
-                    else d.setValue(index,value.getStringValue());
-                }
-            } 
+            else redefineArray(d,value,index); 
         }
-        else {
-            if (d.getArrayType() != value.getType()){
-                Data newarr;
-                if (value.isBoolean())
-                    newarr = new Data(index, value.getBooleanValue());
-                else if (value.isInteger())
-                    newarr = new Data(index, value.getIntegerValue());
-                else newarr = new Data(index, value.getStringValue());
-                d.setData(newarr);
-            }
-            else { // value exists and same type of data
-                if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
-                else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
-                else d.setValue(index,value.getStringValue());
-            }
-        }
+        else redefineArray(d,value,index); 
     }
 
     /** Defines the value of a global array variable. If the array does not
@@ -203,31 +179,9 @@ public class Stack {
      */
     public void defineArrayVariableGlobal(String name, Data value, int index) {
         Data d = Global.get(name);
-        if (d == null) {
-            Data array;
-            if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
-            else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
-            else array = new Data(index,value.getStringValue());
-            Global.put(name, array); 
-        }
-        else {
-            if (d.getArrayType() != value.getType()){
-                Data newarr;
-                if (value.isBoolean())
-                    newarr = new Data(index, value.getBooleanValue());
-                else if (value.isInteger())
-                    newarr = new Data(index, value.getIntegerValue());
-                else newarr = new Data(index, value.getStringValue());
-                d.setData(newarr);
-            }
-            else { // same type of data
-                if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
-                else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
-                else d.setValue(index,value.getStringValue());
-            }
-        }
+        if (d == null) declareArray(d,value,index,name,0); 
+        else redefineArray(d,value,index);
     }
-
 
 
     /** Gets the value of the variable. The value is represented as
