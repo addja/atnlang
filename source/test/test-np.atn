@@ -1,0 +1,53 @@
+def isUpper (s) {
+	return s[0] >= "A" and s[0] <= "Z";
+}
+
+def member (s, l) {
+	for (i = 0; i < l.length; i = i +1) {
+		if (s == l[i]) return true;
+	}
+	return false;
+}
+
+pre[1] = "dr";
+pre[0] = "sr";
+fun[2] = "de";
+fun[1] = "la";
+fun[0] = "el";
+suf[1] = "junior";
+suf[0] = "senior";
+
+atn np {
+	node IN {
+		arc (isUpper(#.0)) goto NP;
+		arc (member(#.0, pre)) goto PREF {
+			print pre, "%n";
+			print #.0;
+		}
+	}
+	node PREF {
+		arc (member(#.0, pre)) goto PREF;
+		#peta a isUpper !!
+		arc (isUpper(#.0)) goto NP;
+	}
+	node NP {
+		arc (isUpper(#.0)) goto NP;
+		arc (member(#.0, suf)) goto SUF;
+		arc (member(#.0, fun)) goto FUN;
+		arc (true) goto END;
+	}
+	node SUF {
+		arc (member(#.0, suf)) goto SUF;
+		arc (true) goto END;
+	}
+	node FUN {
+		arc (member(#.0, fun)) goto FUN;
+		arc (true) goto END;
+	}
+	node END accept;
+}	
+
+def main() {
+	a = atn(np);		
+	print a;
+}
