@@ -1,80 +1,12 @@
 main() <entry point>
 |   np() <line 69>
-|   |   isUpper(s=de) <line 20>
-|   |   return false <line 2>
-|   |   member(s=de, l=[dr,sr,de]) <line 23>
-|   |   return true <line 6>
-|   |   member(s=entre, l=[dr,sr,de]) <line 29>
-|   |   return false <line 9>
-|   |   isUpper(s=entre) <line 32>
-|   |   return false <line 2>
-|   |   isUpper(s=todos) <line 20>
-|   |   return false <line 2>
-|   |   member(s=todos, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=los) <line 20>
-|   |   return false <line 2>
-|   |   member(s=los, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=granujas) <line 20>
-|   |   return false <line 2>
-|   |   member(s=granujas, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=del) <line 20>
-|   |   return false <line 2>
-|   |   member(s=del, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=valle) <line 20>
-|   |   return false <line 2>
-|   |   member(s=valle, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=,) <line 20>
-|   |   return false <line 2>
-|   |   member(s=,, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=siempre) <line 20>
-|   |   return false <line 2>
-|   |   member(s=siempre, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=ha) <line 20>
-|   |   return false <line 2>
-|   |   member(s=ha, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=destacado) <line 20>
-|   |   return false <line 2>
-|   |   member(s=destacado, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=el) <line 20>
-|   |   return false <line 2>
-|   |   member(s=el, l=[dr,sr,de]) <line 23>
-|   |   return false <line 9>
-|   |   isUpper(s=sr) <line 20>
-|   |   return false <line 2>
-|   |   member(s=sr, l=[dr,sr,de]) <line 23>
-|   |   return true <line 6>
-|   |   member(s=dr, l=[dr,sr,de]) <line 29>
-|   |   return true <line 6>
-|   |   member(s=Juan, l=[dr,sr,de]) <line 29>
-|   |   return false <line 9>
-|   |   isUpper(s=Juan) <line 32>
+|   |   isUpper(s=El) <line 20>
 |   |   return true <line 2>
-|   |   isUpper(s=de) <line 40>
+|   |   isUpper(s=gato) <line 40>
 |   |   return false <line 2>
-|   |   member(s=de, l=[junior,senior]) <line 43>
+|   |   member(s=gato, l=[junior,senior]) <line 43>
 |   |   return false <line 9>
-|   |   member(s=de, l=[de,la,el]) <line 46>
-|   |   return true <line 6>
-|   |   member(s=la, l=[de,la,el]) <line 58>
-|   |   return true <line 6>
-|   |   member(s=Sierra, l=[de,la,el]) <line 58>
+|   |   member(s=gato, l=[de,la,el]) <line 46>
 |   |   return false <line 9>
-|   |   isUpper(s=Sierra) <line 61>
-|   |   return true <line 2>
-|   |   isUpper(s=junior) <line 40>
-|   |   return false <line 2>
-|   |   member(s=junior, l=[junior,senior]) <line 43>
-|   |   return true <line 6>
-|   |   member(s=como, l=[junior,senior]) <line 52>
-|   |   return false <line 9>
-|   return true <line 44>
+|   return true <line 21>
 return <line 70>
