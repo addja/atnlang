@@ -51,17 +51,17 @@ public class ATNInterp  {
         ATNTree arc_list = node2Tree.get(name);
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
         
-		for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
+        for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             int index_backup = interp.getParseIndex();
             ATNTree arc = arc_list.getChild(i);
             if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
                 String problem = "last token consumed: " + interp.getLastTokenParsed().toString()
-                				 + "\n|> node " + name + " at arc nº" + String.valueOf(i);
-				
-				ATNTree after_code = arc.getChild(2);
-				if (after_code != null) 
-                	executeAfterArc(after_code, name + " at arc nº" + String.valueOf(i));
+                                 + "\n|> node " + name + " at arc nº" + String.valueOf(i);
+
+                ATNTree after_code = arc.getChild(2);
+                if (after_code != null) 
+                    executeAfterArc(after_code, name + " at arc nº" + String.valueOf(i));
 
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 interp.forwardParseIndex();
