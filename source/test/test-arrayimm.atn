@@ -5,6 +5,4 @@ def main() {
 	print a, "%n";
 	a = {true, false, false};
 	print a, "%n";
-	a = {"wolo", false, 3};
-	print a;
 }

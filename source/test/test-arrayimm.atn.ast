@@ -1,0 +1,1 @@
+(PROGRAM (def main PARAMS (LIST_INSTR (:= a (ARRAY_DECL 1 2 34)) (print a "%n") (:= a (ARRAY_DECL "hola" "yo" "hey")) (print a "%n") (:= a (ARRAY_DECL true false false)) (print a "%n"))))
