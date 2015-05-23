@@ -9,6 +9,8 @@ def member (s, l) {
 	return false;
 }
 
+nombre = "";
+
 atn np {	
 	pre[1] = "dr";
 	pre[0] = "sr";
@@ -19,31 +21,56 @@ atn np {
 	suf[0] = "senior";
 
 	node IN {
-		arc (isUpper(#.0)) goto NP;
-		arc (member(#.0, pre)) goto PREF;
+		arc (isUpper(#.0)) goto NP {
+			nombre = nombre + #.0 + " ";
+		}
+		arc (member(#.0, pre)) goto PREF {
+			nombre = nombre + #.0 + " ";
+		}
+		arc(true) goto IN;
 	}
 	node PREF {
-		arc (member(#.0, pre)) goto PREF;
-		arc (isUpper(#.0)) goto NP;
+		arc (member(#.0, pre)) goto PREF {
+			nombre = nombre + #.0 + " ";
+		}
+		arc (isUpper(#.0)) goto NP {
+			nombre = nombre + #.0 + " ";
+		}
+		arc(true) goto IN {
+			nombre = "";
+		}
 	}
 	node NP {
-		arc (isUpper(#.0)) goto NP;
-		arc (member(#.0, suf)) goto SUF;
-		arc (member(#.0, fun)) goto FUN;
+		arc (isUpper(#.0)) goto NP {
+			nombre = nombre + #.0 + " ";
+		}
+		arc (member(#.0, suf)) goto SUF {
+			nombre = nombre + #.0 + " ";
+		}
+		arc (member(#.0, fun)) goto FUN {
+			nombre = nombre + #.0 + " ";
+		}
 		arc (true) goto END;
 	}
 	node SUF {
-		arc (member(#.0, suf)) goto SUF;
+		arc (member(#.0, suf)) goto SUF {
+			nombre = nombre + #.0 + " ";
+		}
 		arc (true) goto END;
 	}
 	node FUN {
-		arc (member(#.0, fun)) goto FUN;
-		arc (true) goto END;
+		arc (member(#.0, fun)) goto FUN {
+			nombre = nombre + #.0 + " ";
+		}
+		arc (isUpper(#.0)) goto NP {
+			nombre = nombre + #.0 + " ";
+		}
 	}
 	node END accept;
 }	
 
 def main() {
 	a = atn(np);
-	print a, "%n";
+	if (a) print "Nombre encontrado: ",nombre, "%n";
+	else print "ningún nombre ha sido encontrado", "%n";
 }
