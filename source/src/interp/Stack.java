@@ -61,22 +61,12 @@ public class Stack {
         StackTrace.addLast (new StackTraceItem(name, line));
     }
 
-    /** Creates a new ecord for arc called on the atn */
-    public void pushArc(String name, int line) {
-        StackTraceATN.addLast (new StackTraceItem(name, line));
-    }
-
     /** Destroys the current activation record */
     public void popActivationRecord() {
         Stack.removeLast();
         if (Stack.isEmpty()) CurrentAR = null;
         else CurrentAR = Stack.getLast();
         StackTrace.removeLast();
-    }
-
-    /** Destroys the current atn arcs record */
-    public void popArcs() {
-        StackTraceATN = new LinkedList<StackTraceItem>();
     }
 
     /** Returns the Global variables Hashmap */
@@ -255,28 +245,6 @@ public class Stack {
         }
         return trace.toString();
     } 
-
-    /**
-     * Generates a string with the contents of the atn trace.
-     * Each line contains a node name and the line number where
-     * the next arc is followed. Finally, the line number in
-     * the current node is written.
-     * @param current_line program line executed when this function
-     *        is called.
-     * @return A string with the contents of the atn trace.
-     */ 
-    public String getAtnTrace(int current_line) {
-        int size = StackTraceATN.size();
-        ListIterator<StackTraceItem> itr = StackTraceATN.listIterator(size);
-        StringBuffer trace = new StringBuffer("---------------%n| Atn trace |%n---------------%n");
-        trace.append("** Depth = ").append(size).append("%n");
-        while (itr.hasPrevious()) {
-            StackTraceItem it = itr.previous();
-            trace.append("|> ").append(it.fname).append(": line ").append(current_line).append("%n");
-            current_line = it.line;
-        }
-        return trace.toString();
-    }
 
     public void pushAtnVars(HashMap<String,Data> a) { AtnVars = a; }
 
