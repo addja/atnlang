@@ -411,6 +411,14 @@ public class Interp {
     }
 
     /**
+     * returns the last token parsed
+     * @return last token parsed
+     */
+    public ArrayList<String> getLastTokenParsed() {
+        return inputToParse.get(parseIndex);
+    }
+
+    /**
      * Evaluates the expression represented in the AST t.
      * @param t The AST of the expression
      * @return The value of the expression.
@@ -737,4 +745,5 @@ public class Interp {
         trace.println(" <line " + lineNumber() + ">");
         if (function_nesting < 0) trace.close();
     }
+
 }

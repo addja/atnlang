@@ -56,7 +56,9 @@ public class ATNInterp  {
             int index_backup = interp.getParseIndex();
             ATNTree arc = arc_list.getChild(i);
             if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
-                executeAfterArc(arc.getChild(2), name + " at arc nº" + String.valueOf(i));
+                String problem = "last token consumed: " + interp.getLastTokenParsed().toString()
+                + "\n|> node " + name + " at arc nº" + String.valueOf(i);
+                executeAfterArc(arc.getChild(2), problem);
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 interp.forwardParseIndex();
                 if (executeNode(nextNode)) return true;
