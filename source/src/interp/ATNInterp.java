@@ -24,9 +24,9 @@ public class ATNInterp  {
                     String id = f.getChild(0).getChild(0).getText();
                     Data index = interp.evaluateExpression(f.getChild(0).getChild(1));
                     if (!index.isInteger()) throw new RuntimeException("Array indexes can only be integers");
-                    defineArray(id, value, index.getIntegerValue());
+                    defineATNArray(id, value, index.getIntegerValue());
                 }
-                else defineVariable(f.getChild(0).getText(), value);
+                else defineATNVar(f.getChild(0).getText(), value);
             }
             else {
                 if (startingNode == null) startingNode = node_list.getChild(i).getChild(0).getText();
@@ -50,15 +50,19 @@ public class ATNInterp  {
     private boolean executeNode (String name) {
         ATNTree arc_list = node2Tree.get(name);
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
-
-        for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
+        
+		for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
             int index_backup = interp.getParseIndex();
             ATNTree arc = arc_list.getChild(i);
             if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
                 String problem = "last token consumed: " + interp.getLastTokenParsed().toString()
-                + "\n|> node " + name + " at arc nº" + String.valueOf(i);
-                executeAfterArc(arc.getChild(2), problem);
+                				 + "\n|> node " + name + " at arc nº" + String.valueOf(i);
+				
+				ATNTree after_code = arc.getChild(2);
+				if (after_code != null) 
+                	executeAfterArc(after_code, name + " at arc nº" + String.valueOf(i));
+
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 interp.forwardParseIndex();
                 if (executeNode(nextNode)) return true;
@@ -81,13 +85,13 @@ public class ATNInterp  {
         node2Tree.put(t.getChild(0).getText(), t.getChild(1));
     }
 
-    private void defineVariable(String name, Data value) {
+    private void defineATNVar(String name, Data value) {
         Data d = atnVars.get(name);
         if (d == null) atnVars.put(name, value); // New definition
         else d.setData(value); // Use the previous data 
     }
 
-    private void defineArray(String name, Data value, int index) {
+    private void defineATNArray(String name, Data value, int index) {
         Data d = atnVars.get(name);
         if (d == null) {
             Data array;
@@ -113,5 +117,5 @@ public class ATNInterp  {
             }
         }
     }
-
 }
+

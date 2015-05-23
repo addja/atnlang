@@ -20,14 +20,10 @@ suf[0] = "senior";
 atn np {
 	node IN {
 		arc (isUpper(#.0)) goto NP;
-		arc (member(#.0, pre)) goto PREF {
-			print pre, "%n";
-			print #.0;
-		}
+		arc (member(#.0, pre)) goto PREF;
 	}
 	node PREF {
 		arc (member(#.0, pre)) goto PREF;
-		#peta a isUpper !!
 		arc (isUpper(#.0)) goto NP;
 	}
 	node NP {
@@ -48,6 +44,6 @@ atn np {
 }	
 
 def main() {
-	a = atn(np);		
-	print a;
+	a = atn(np);
+	print a, "%n";
 }
