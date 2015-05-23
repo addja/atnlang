@@ -32,11 +32,8 @@ public class Interp {
      */
     private HashMap<String,ATNInterp> ATNname2Tree;
 
-    /**
-    * // TODO input extention
-    * // Standard input of the interpreter (System.in).
-    * private Scanner stdin;
-    */
+    // Standard input of the interpreter (System.in).
+    private Scanner stdin;
 
     /**
      * Stores the line number of the current statement.
@@ -64,9 +61,7 @@ public class Interp {
         ParseProgram(T);  // Creates the table to map function names into AST nodes
         // Initializes the standard input of the program
 
-        /** TODO: input extention
-        * stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
-        */
+        stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
         if (tracefile != null) {
             try {
                 trace = new PrintWriter(new FileWriter(tracefile));
@@ -352,8 +347,7 @@ public class Interp {
                     return evaluateExpression(t.getChild(0));
                 }
                 return new Data(); // No expression: returns void data
-
-            /*  
+  
             // Read statement: reads a variable and raises an exception
             // in case of a format error.
             case ATNLexer.READ:
@@ -363,11 +357,24 @@ public class Interp {
                     token = stdin.next();
                     val.setValue(Integer.parseInt(token)); 
                 } catch (NumberFormatException ex) {
-                    throw new RuntimeException ("Format error when reading a number: " + token);
+                    try {
+                        if (token == "true") val.setValue(true);
+                        else if (token == "false") val.setValue(false);
+                        else {
+                            val.setValue(token);
+                        }
+                    } catch (RuntimeException ex1) {
+                        throw new RuntimeException ("Format error when reading: " + token);
+                    }
                 }
-                Stack.defineVariable (t.getChild(0).getText(), val);
+                if (t.getChild(0).getType() == ATNLexer.BRACKET) {
+                    String id = t.getChild(0).getChild(0).getText();
+                    Data index = evaluateExpression(t.getChild(0).getChild(1));
+                    checkInteger(index);
+                    Stack.defineArrayVariable (id, val, index.getIntegerValue());
+                }
+                else Stack.defineVariable (t.getChild(0).getText(), val);
                 return null;
-            */
 
             // Write statement: it can write an expression or a string.
             case ATNLexer.PRINT:
@@ -387,7 +394,6 @@ public class Interp {
 
             case ATNLexer.ATNCALL:
                 executeATN(t.getChild(0).getText());
-                // TODO : interrupt execution or raise exception when a void
                 // atn is executed and fails
                 return null;
 
