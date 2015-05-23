@@ -1,0 +1,63 @@
+def isNumber(a) {
+	for (i = 0; i < a.length; i=i+1) {
+		if (a[i] == "1");
+		else if (a[i] == "2");
+		else if (a[i] == "3");
+		else if (a[i] == "4");
+		else if (a[i] == "5");
+		else if (a[i] == "6");
+		else if (a[i] == "7");
+		else if (a[i] == "8");
+		else if (a[i] == "9");
+		else return false;
+	}
+	return true;
+
+}
+
+def member (s, l) {
+	for (i = 0; i < l.length; i = i +1) {
+		if (s == l[i]) return true;
+	}
+	return false;
+}
+
+atn quantities {
+
+	unit = {"km","m","s"};
+	frag = {"medio","tercio","cuarto"};
+
+	node A {
+		arc (isNumber(#.0)) goto B;
+	}
+	node B {
+		arc (member(#.0,unit)) goto G;
+		arc (#.0 == "por") goto D;
+		arc (#.0 == "%" or member(#.0,frag)) goto C;
+		arc (#.0 == "sobre") goto F;
+		arc (#.0 == "de") goto E;
+	}
+	node C {
+		arc (#.0 == "parte" or #.0 == "partes") goto C;
+		arc (true) goto END;
+	}
+	node D {
+		arc(#.0 == "100" or #.0 == "1000") goto C;
+	}
+	node E {
+		arc(#.0 == "cada") goto F;
+	}
+	node F {
+		arc(isNumber(#.0)) goto END;
+	}
+	node G {
+		arc(true) goto END;
+	}
+
+	node END accept;
+}
+
+def main() {
+	a = atn(quantities);
+	print a, "%n";
+}
