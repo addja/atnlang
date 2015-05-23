@@ -358,11 +358,7 @@ public class Interp {
                     val.setValue(Integer.parseInt(token)); 
                 } catch (NumberFormatException ex) {
                     try {
-                        if (token == "true") val.setValue(true);
-                        else if (token == "false") val.setValue(false);
-                        else {
                             val.setValue(token);
-                        }
                     } catch (RuntimeException ex1) {
                         throw new RuntimeException ("Format error when reading: " + token);
                     }

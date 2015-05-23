@@ -93,6 +93,7 @@ block_instructions
 instruction
         :   assign ';'!         // Assignment
         |   ite_stmt            // if-then-else
+        |   read ';'!           // read some input variable
         |   while_stmt          // while statement
         |   for_stmt            // for statement
         |   funcall ';'!        // Call to a procedure (no result produced)
@@ -120,6 +121,10 @@ for_stmt    :   FOR^ '('! assign ';'! expr ';'! assign ')'! list_instructions
 
 // Write an expression or a string
 print   :   PRINT^ expr (','! expr)*
+        ;
+
+// Read a variable
+read    :   READ^ subatom
         ;
 
 //Return of a value in a function
@@ -201,6 +206,7 @@ ARC     : 'arc' ;
 ATN     : 'atn' ;
 DEF     : 'def' ;
 ACCEPT  : 'accept' ;
+READ    : 'read' ;
 RETURN  : 'return' ;
 PRINT   : 'print' ;
 JUMP    : 'goto' ;
