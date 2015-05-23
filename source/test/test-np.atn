@@ -9,15 +9,15 @@ def member (s, l) {
 	return false;
 }
 
-pre[1] = "dr";
-pre[0] = "sr";
-fun[2] = "de";
-fun[1] = "la";
-fun[0] = "el";
-suf[1] = "junior";
-suf[0] = "senior";
+atn np {	
+	pre[1] = "dr";
+	pre[0] = "sr";
+	fun[2] = "de";
+	fun[1] = "la";
+	fun[0] = "el";
+	suf[1] = "junior";
+	suf[0] = "senior";
 
-atn np {
 	node IN {
 		arc (isUpper(#.0)) goto NP;
 		arc (member(#.0, pre)) goto PREF;
