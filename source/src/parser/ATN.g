@@ -17,6 +17,7 @@ tokens {
     ATNCALL;    // ATN function call
     ARGLIST;    // List of arguments passed in a function call
     LIST_INSTR; // Block of instructions
+    ARRAY_DECL; // Array immediate declaration
     NODELIST;   // List of nodes of an ATN
     ARC_LIST;   // List of arc definitions
     BOOLEAN;    // Boolean atom (for Boolean constants "true" or "false")
@@ -157,6 +158,7 @@ factor  :   (NOT^ | PLUS^ | MINUS^) factor | atom
 atom    :   subatom 
         |   INT
         |   STRING
+        |   '{' expr (',' expr)* '}' -> ^(ARRAY_DECL expr*)
         |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
         |   funcall
         |   atncall     //calls atn and saves value on var

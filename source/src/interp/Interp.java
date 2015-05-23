@@ -499,6 +499,35 @@ public class Interp {
             case ATNLexer.STRING:
                 value = new Data(t.getStringValue());
                 break;
+            case ATNLexer.ARRAY_DECL:
+                Data d = evaluateExpression(t.getChild(0));
+                if (d.isBoolean()) {
+                    value = new Data(0,d.getBooleanValue());
+                    for (int k = 1; k < t.getChildCount(); ++k) {
+                        Data exp = evaluateExpression(t.getChild(k));
+                        checkBoolean(exp);
+                        value.setValue(k, exp.getBooleanValue());
+                    }
+                }
+                else if (d.isString()) {
+                    value = new Data(0,d.getStringValue());
+                    for (int k = 1; k < t.getChildCount(); ++k) {
+                        Data exp = evaluateExpression(t.getChild(k));
+                        checkString(exp);
+                        value.setValue(k, exp.getStringValue());
+                    }
+                }
+                else if (d.isInteger()) {
+                    value = new Data(0,d.getIntegerValue());
+                    for (int k = 1; k < t.getChildCount(); ++k) {
+                        Data exp = evaluateExpression(t.getChild(k));
+                        checkInteger(exp);
+                        value.setValue(k, exp.getIntegerValue());
+                    }
+                }
+                else assert false;
+                break;
+
             default: break;
         }
 
@@ -637,7 +666,7 @@ public class Interp {
     /** Checks that the data is integer and raises an exception if it is not. */
     private void checkString (Data b) {
         if (!b.isString()) {
-            throw new RuntimeException ("Expecting a String concatenation");
+            throw new RuntimeException ("Expecting a String expression");
         }
     }
 

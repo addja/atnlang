@@ -1,0 +1,10 @@
+def main() {
+	a = {1,2,34};
+	print a, "%n";
+	a = {"hola","yo","hey"};
+	print a, "%n";
+	a = {true, false, false};
+	print a, "%n";
+	a = {"wolo", false, 3};
+	print a;
+}
