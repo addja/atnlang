@@ -12,13 +12,9 @@ def member (s, l) {
 nombre = "";
 
 atn np {	
-	pre[1] = "dr";
-	pre[0] = "sr";
-	fun[2] = "de";
-	fun[1] = "la";
-	fun[0] = "el";
-	suf[1] = "junior";
-	suf[0] = "senior";
+	pre = {"dr", "sr", "de"};
+	fun = {"de", "la", "el"};
+	suf = {"junior", "senior"};
 
 	node IN {
 		arc (isUpper(#.0)) goto NP {
