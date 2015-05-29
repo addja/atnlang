@@ -61,7 +61,7 @@ public class ATNInterp  {
 
                 ATNTree after_code = arc.getChild(2);
                 if (after_code != null) 
-                    executeAfterArc(after_code, name + " at arc nº" + String.valueOf(i));
+                    executeAfterArc(after_code, problem);
 
                 String nextNode = arc.getChild(1).getChild(0).getText();
                 interp.forwardParseIndex();
