@@ -1,7 +1,7 @@
 atn numbers {
 
 	node B1 {
-		arc (member(#.500,c)) goto B2;
+		arc (member(#.0,c)) goto B2;
 		arc (member(#.0,u)) goto Bu;
 		arc (member(#.0,d)) goto B3;
 		arc (#.0 == "mil") goto B5;
@@ -228,3 +228,4 @@ u = {"uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"};
 def main() {
 	print atn(numbers), "%n";
 }
+
