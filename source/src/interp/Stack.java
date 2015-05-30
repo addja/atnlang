@@ -84,6 +84,14 @@ public class Stack {
         else CurrentAtnVars = ATNStack.getLast();
     }
 
+    public HashMap<String,Data> getCurrentATNVars() {
+        return CurrentAtnVars;
+    }
+
+    public void setATNVars(HashMap<String,Data> vars) {
+        this.CurrentAtnVars = vars;
+    }
+
     /** Returns the Global variables Hashmap */
     public HashMap<String,Data> getGlobalVars() {
         return Global;

@@ -53,7 +53,9 @@ public class ATNInterp  {
         
         for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
             HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
+            HashMap<String,Data> atn_backup = new HashMap<String,Data>(interp.getStack().getCurrentATNVars());
             int index_backup = interp.getParseIndex();
+
             ATNTree arc = arc_list.getChild(i);
             if (interp.evaluateExpression(arc.getChild(0)).getBooleanValue()) {
                 String problem = "last token consumed: " + interp.getLastTokenParsed().toString()
@@ -67,6 +69,8 @@ public class ATNInterp  {
                 interp.forwardParseIndex();
                 if (executeNode(nextNode)) return true;
             }
+
+            interp.getStack().setATNVars(atn_backup);
             interp.getStack().setGlobalVars(global_backup);
             interp.setParseIndex(index_backup);
         }
