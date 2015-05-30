@@ -22,8 +22,10 @@ public class Stack {
     /** Global variable hasmap */
     private HashMap<String,Data> Global;
 
+    private LinkedList<HashMap<String,Data>> ATNStack;
+
     /** Atn local vars */
-    private HashMap<String,Data> AtnVars;
+    private HashMap<String,Data> CurrentAtnVars = null;
 
     /**
      * Class to represent an item of the Stack trace.
@@ -46,9 +48,10 @@ public class Stack {
     
     /** Constructor of the memory */
     public Stack() {
-        AtnVars = new HashMap<String,Data>();
+        ATNStack = new LinkedList<HashMap<String,Data>>();
         Stack = new LinkedList<HashMap<String,Data>>();
         CurrentAR = null;
+        CurrentAtnVars = new HashMap<String,Data>();
         StackTrace = new LinkedList<StackTraceItem>();
         StackTraceATN = new LinkedList<StackTraceItem>();
         Global = new HashMap<String,Data>();
@@ -67,6 +70,18 @@ public class Stack {
         if (Stack.isEmpty()) CurrentAR = null;
         else CurrentAR = Stack.getLast();
         StackTrace.removeLast();
+    }
+
+    public void pushAtnVars(HashMap<String,Data> vars) {
+        CurrentAtnVars = vars;
+        ATNStack.addLast(CurrentAtnVars);
+    }
+
+    public void popAtnVars() {
+        ATNStack.removeLast();
+        if (ATNStack.isEmpty())
+            CurrentAtnVars = new HashMap<String,Data>();
+        else CurrentAtnVars = ATNStack.getLast();
     }
 
     /** Returns the Global variables Hashmap */
@@ -88,7 +103,7 @@ public class Stack {
     public void defineVariable(String name, Data value) {
         Data d = CurrentAR.get(name);
         if (d == null) {
-            d = AtnVars.get(name);
+            d = CurrentAtnVars.get(name);
             if (d == null) {
                 d = Global.get(name);
                 if (d == null) CurrentAR.put(name, value); // New definition
@@ -112,32 +127,32 @@ public class Stack {
     }
 
 
-	private void redefineArray (Data d, Data value, int index) {
-		if (d.getArrayType() != value.getType()){
-			Data newarr;
-			if (value.isBoolean())
-				newarr = new Data(index, value.getBooleanValue());
-			else if (value.isInteger())
-				newarr = new Data(index, value.getIntegerValue());
-			else newarr = new Data(index, value.getStringValue());
-			d.setData(newarr);
-		}
-		else { // same type of data
-			if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
-			else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
-			else d.setValue(index,value.getStringValue());
-		}
-	}
+    private void redefineArray (Data d, Data value, int index) {
+        if (d.getArrayType() != value.getType()){
+            Data newarr;
+            if (value.isBoolean())
+                newarr = new Data(index, value.getBooleanValue());
+            else if (value.isInteger())
+                newarr = new Data(index, value.getIntegerValue());
+            else newarr = new Data(index, value.getStringValue());
+            d.setData(newarr);
+        }
+        else { // same type of data
+            if (value.isBoolean()) d.setValue(index,value.getBooleanValue());
+            else if (value.isInteger()) d.setValue(index,value.getIntegerValue());
+            else d.setValue(index,value.getStringValue());
+        }
+    }
 
-	private void declareArray (Data d, Data value, int index, String name, int flag) {
-		Data array;
-		if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
-		else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
-		else array = new Data(index,value.getStringValue());
+    private void declareArray (Data d, Data value, int index, String name, int flag) {
+        Data array;
+        if (value.isBoolean()) array = new Data(index,value.getBooleanValue());
+        else if (value.isInteger()) array = new Data(index,value.getIntegerValue());
+        else array = new Data(index,value.getStringValue());
 
-		if (flag > 0) CurrentAR.put(name, array);
-		else Global.put(name, array); 
-	}
+        if (flag > 0) CurrentAR.put(name, array);
+        else Global.put(name, array); 
+    }
 
     /** Defines the value of an array variable. If the array does not
      * exist, it is created with null slots. If it exists, the value and type of
@@ -149,7 +164,7 @@ public class Stack {
     public void defineArrayVariable(String name, Data value, int index) {
         Data d = CurrentAR.get(name);
         if (d == null) {
-            d = AtnVars.get(name);
+            d = CurrentAtnVars.get(name);
             if (d == null) {
                 d = Global.get(name);
                 if (d == null) declareArray(d,value,index,name,1); 
@@ -183,7 +198,7 @@ public class Stack {
     public Data getVariable(String name) {
         Data v = Global.get(name);
         if (v == null) {
-            v = AtnVars.get(name);
+            v = CurrentAtnVars.get(name);
             if (v == null) {
                 v = CurrentAR.get(name);
                 if (v == null) {
@@ -245,10 +260,5 @@ public class Stack {
         }
         return trace.toString();
     } 
-
-    public void pushAtnVars(HashMap<String,Data> a) { AtnVars = a; }
-
-    public void popAtnVars() { AtnVars = new HashMap<String,Data>(); }
-
 }
     

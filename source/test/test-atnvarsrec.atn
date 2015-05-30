@@ -1,0 +1,21 @@
+atn a2 {
+	node n1 {
+		arc (true) goto n2;
+	}
+	node n2 accept;	
+}
+
+atn a1 {
+	a = 1;
+	node n1 {
+		arc (atn(a2)) goto n2 {
+			print a, "%n";
+		}
+	}
+	node n2 accept; 
+}
+
+def main () {
+	a = atn(a1);
+	print a, "%n";
+}
