@@ -1,0 +1,1 @@
+(PROGRAM (:= a 1) (atn exemple1 (NODELIST (node recurs (ARC_LIST (arc true (goto recurs) (LIST_INSTR (print a "%n") (:= a (+ a 1)))) (arc (== (# 0) "1") (goto END) (LIST_INSTR (print "%nfinally " a))))) (node END accept))) (def main PARAMS (LIST_INSTR (ATNCALL exemple1))))

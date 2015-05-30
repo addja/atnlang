@@ -1,0 +1,4 @@
+main() <entry point>
+|   exemple1() <line 17>
+|   return false <line 7>
+return <line 7>

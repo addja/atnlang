@@ -98,8 +98,8 @@ public class Stack {
     }
 
     /** Returns the Global variables Hashmap */
-    public void setGlobalVars(HashMap<String,Data> Global) {
-        this.Global = Global;
+    public void setGlobalVars(HashMap<String,Data> vars) {
+        Global = vars;
     }
 
     /** Defines the value of a variable. If the variable does not
@@ -269,4 +269,4 @@ public class Stack {
         return trace.toString();
     } 
 }
-    
+

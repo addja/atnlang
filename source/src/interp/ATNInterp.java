@@ -1,6 +1,7 @@
 package interp;
 
 import java.util.HashMap;
+import java.util.Map;
 import parser.*;
 
 public class ATNInterp  {
@@ -10,6 +11,14 @@ public class ATNInterp  {
     private ATNTree tree;
     private Interp interp;
     private HashMap<String,Data> atnVars;
+
+    private static HashMap<String,Data> copyHashMap (HashMap<String,Data> map) {
+        HashMap<String,Data> r = new HashMap<String,Data>();
+        for(Map.Entry<String, Data> entry : map.entrySet()) {
+            r.put(entry.getKey(), new Data(entry.getValue()));
+        }
+        return r;
+    }
 
     public ATNInterp (ATNTree t, Interp interp) {
         node2Tree = new HashMap<String,ATNTree>();
@@ -52,8 +61,8 @@ public class ATNInterp  {
         if (arc_list.getType() == ATNLexer.ACCEPT) return true;
         
         for (int i = 0; i < arc_list.getChildCount() && !interp.textParsed(); ++i) {
-            HashMap<String,Data> global_backup = new HashMap<String,Data>(interp.getStack().getGlobalVars());
-            HashMap<String,Data> atn_backup = new HashMap<String,Data>(interp.getStack().getCurrentATNVars());
+            HashMap<String,Data> global_backup = copyHashMap(interp.getStack().getGlobalVars());
+            HashMap<String,Data> atn_backup = copyHashMap(interp.getStack().getCurrentATNVars());
             int index_backup = interp.getParseIndex();
 
             ATNTree arc = arc_list.getChild(i);
