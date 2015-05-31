@@ -1,0 +1,1 @@
+(PROGRAM (def test PARAMS (LIST_INSTR (print (# 0) "%n"))) (atn a1 (NODELIST (node n1 (ARC_LIST (arc true (goto n2) (LIST_INSTR (FUNCALL test ARGLIST))))) (node n2 (ARC_LIST (arc true (goto n3) (LIST_INSTR (FUNCALL test ARGLIST))))) (node n3 accept))) (def main PARAMS (LIST_INSTR (print (# 0) "%n") (ATNCALL a1))))
