@@ -1,0 +1,1 @@
+(PROGRAM (atn a2 (NODELIST (node n1 (ARC_LIST (arc true (goto n2) (LIST_INSTR (print (# 0) "%n"))))) (node n2 accept))) (atn a1 (NODELIST (node n1 (ARC_LIST (arc true (goto n2) (LIST_INSTR (ATNCALL a2))))) (node n2 accept))) (def main PARAMS (LIST_INSTR (ATNCALL a1))))

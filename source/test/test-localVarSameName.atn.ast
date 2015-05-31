@@ -1,0 +1,1 @@
+(PROGRAM (:= a 1) (def main PARAMS (LIST_INSTR (:= a 2) (print a "%n"))))

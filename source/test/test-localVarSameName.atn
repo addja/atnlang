@@ -1,0 +1,6 @@
+a = 1;
+
+def main() {
+	a = 2;
+	print a, "%n";	
+}
