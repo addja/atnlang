@@ -45,13 +45,18 @@ utilities   : DEF^ ID params '{'! block_instructions '}'!
             | assign ';'!   //Global vars
             ;
 
+// List of nodes rooted to NODELIST
 node_list   : node+ -> ^(NODELIST node+)
             ;
 
+// A node can be a node definition or a local ATN 
+// variable assigment
 node        : NODE^ ID arc_list
             | assign ';'!
             ;
 
+// An arc list can also consist of only one definition
+// or can be an accepting node
 arc_list    : '{' arc+ '}' -> ^(ARC_LIST arc+) 
             | arc -> ^(ARC_LIST arc)
             | ACCEPT^ ';'! 
@@ -78,7 +83,8 @@ param   :   '&' id=ID -> ^(PREF[$id,$id.text])
         |   id=ID -> ^(PVALUE[$id,$id.text])
         ;
 
-// A list of instructions, either enclosed or not
+// A list of instructions, either enclosed in brackets or not
+// Also, a list of instructions can be empty
 list_instructions
         :  instruction -> ^(LIST_INSTR instruction)
         |  ';'!
@@ -90,7 +96,7 @@ block_instructions
         :  instruction+ -> ^(LIST_INSTR instruction+)
         ;
 
-// The different types of instructions
+// The different types of instructions, followed by semicolon
 instruction
         :   assign ';'!         // Assignment
         |   ite_stmt            // if-then-else
@@ -166,6 +172,7 @@ atom    :   subatom
         |   HASH^ '.'! INT
         ;
 
+// Array definition or array length checking
 subatom :   ID (BRACKET^ expr ']'!)?
         |   ID '.length' -> ^(ARRAYLENGTH ID)
         ;
