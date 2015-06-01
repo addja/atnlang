@@ -1,10 +1,10 @@
 main() <entry point>
-|   numbers() <line 229>
-|   |   member(s=El, l=[ciento,doscientos,trescientos,quatrocientos,quinientos,seiscientos,setecientos,ochocientos,novecientos]) <line 4>
-|   |   return false <line 215>
-|   |   member(s=El, l=[uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve]) <line 5>
-|   |   return false <line 215>
-|   |   member(s=El, l=[diez,once,doce,trece,catorce,quince,dieciseis,diecisiete,dieciocho,diecinueve,veinte,veintiuno,veintidos,veintitres,veinticuatro,veinticinco,veintiseis,veitisiete,veintiocho,veintinueve,tenta,cuarenta,cincuenta,sesenta,setenta,ochenta,noventa]) <line 6>
-|   |   return false <line 215>
-|   return false <line 1>
-return <line 229>
+|   numbers() <line 448>
+|   |   member(s=El, l=[ciento,doscientos,trescientos,quatrocientos,quinientos,seiscientos,setecientos,ochocientos,novecientos]) <line 71>
+|   |   return false <line 7>
+|   |   member(s=El, l=[uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve]) <line 74>
+|   |   return false <line 7>
+|   |   member(s=El, l=[diez,once,doce,trece,catorce,quince,dieciseis,diecisiete,dieciocho,diecinueve,veinte,veintiuno,veintidos,veintitres,veinticuatro,veinticinco,veintiseis,veitisiete,veintiocho,veintinueve,treinta,cuarenta,cincuenta,sesenta,setenta,ochenta,noventa]) <line 77>
+|   |   return false <line 7>
+|   return false <line 68>
+return <line 450>

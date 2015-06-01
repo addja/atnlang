@@ -1,231 +1,451 @@
-atn numbers {
-
-	node B1 {
-		arc (member(#.0,c)) goto B2;
-		arc (member(#.0,u)) goto Bu;
-		arc (member(#.0,d)) goto B3;
-		arc (#.0 == "mil") goto B5;
-		arc (#.0 == "medio") goto X4;
-	}
-	node B2 {
-		arc (member(#.0,u)) goto Bu;
-		arc (member(#.0,d)) goto B3;
-		arc (#.0 == "mil") goto B5;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node B3 {
-		arc (#.0 == "mil") goto B5;
-		arc (#.0 == "y") goto B4;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node B4 {
-		arc (member(#.0,u)) goto Bu;
-	}
-	node B5 {
-		arc (member(#.0,c)) goto B6;
-		arc (member(#.0,u)) goto B7;
-		arc (member(#.0,d)) goto Bk;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node B6 {
-		arc (member(#.0,u)) goto B7;
-		arc (member(#.0,d)) goto Bk;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node B7 {
-		arc (#.0 == "y") goto B4;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node B8 {
-		arc (member(#.0,u)) goto B7;
-	}
-	node Bu {
-		arc (#.0 == "mil") goto B5;
-		arc (#.0 == "decena" or #.0 == "decenas"
-			or #.0 == "docena" or #.0 == "docenas"
-			or #.0 == "centena" or #.0 == "centenas"
-			or #.0 == "millar" or #.0 == "millares"
-		) goto X1;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node Bk {
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-
-	node X1 {
-		arc (#.0 == "y") goto B4;
-		arc (true) goto END;
-	}
-	node X2 {
-		arc (#.0 == "medio" or #.0 == "cuarto") goto X3;
-	}
-	node X3 {
-		arc (true) goto END;
-	}
-	node X4 {
-		arc (#.0 == "decena" or #.0 == "decenas"
-				or #.0 == "docena" or #.0 == "docenas"
-				or #.0 == "centena" or #.0 == "centenas"
-				or #.0 == "millar" or #.0 == "millares"
-			) goto X1;
-		arc (#.0 == "billon" or #.0 == "billones") goto M1;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-	}
-	node X5 {
-		arc (true) goto END;
-	}
-
-	node M1 {
-		arc (member(#.0,c)) goto M2;
-		arc (member(#.0,u)) goto Mu;
-		arc (member(#.0,d)) goto M3;
-		arc (#.0 == "mil") goto M5;
-		arc (#.0 == "y") goto M1a;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node M2 {
-		arc (member(#.0,u)) goto Mu;
-		arc (member(#.0,d)) goto M3;
-		arc (#.0 == "mil") goto M5;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node M3 {
-		arc (#.0 == "mil") goto M5;
-		arc (#.0 == "y") goto M4;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node M4 {
-		arc (member(#.0,u)) goto Mu;
-	}
-	node M5 {
-		arc (member(#.0,c)) goto M6;
-		arc (member(#.0,u)) goto M7;
-		arc (member(#.0,d)) goto Mk;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node M6 {
-		arc (member(#.0,u)) goto M7;
-		arc (member(#.0,d)) goto Mk;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node M7 {
-		arc (#.0 == "y") goto M4;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node M8 {
-		arc (member(#.0,u)) goto M7;
-	}
-	node Mu {
-		arc (#.0 == "mil") goto M5;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-		arc (true) goto END;
-	}
-	node Mk {
-		arc (true) goto END;
-		arc (#.0 == "millon" or #.0 == "millones") goto S1;
-	}
-	node M1a {
-		arc (#.0 == "medio" or #.0 == "cuarto") goto X3;
-	}
-	node M1b {
-		arc (true) goto END;
-	}
-
-	node S1 {
-		arc (member(#.0,c)) goto S2;
-		arc (member(#.0,u)) goto Su;
-		arc (member(#.0,d)) goto S3;
-		arc (#.0 == "mil") goto S5;
-		arc (#.0 == "y") goto S1a;
-		arc (true) goto END;
-	}
-	node S2 {
-		arc (member(#.0,u)) goto Su;
-		arc (member(#.0,d)) goto S3;
-		arc (#.0 == "mil") goto S5;
-		arc (true) goto END;
-	}
-	node S3 {
-		arc (#.0 == "mil") goto S5;
-		arc (#.0 == "y") goto S4;
-		arc (true) goto END;
-	}
-	node S4 {
-		arc (member(#.0,u)) goto Su;
-	}
-	node S5 {
-		arc (member(#.0,c)) goto S6;
-		arc (member(#.0,u)) goto S7;
-		arc (member(#.0,d)) goto Sk;
-		arc (true) goto END;
-	}
-	node S6 {
-		arc (member(#.0,u)) goto S7;
-		arc (member(#.0,d)) goto Sk;
-		arc (true) goto END;
-	}
-	node S7 {
-		arc (#.0 == "y") goto S4;
-		arc (true) goto END;
-	}
-	node S8 {
-		arc (member(#.0,u)) goto S7;
-	}
-	node Su {
-		arc (#.0 == "mil") goto S5;
-		arc (true) goto END;
-	}
-	node Sk {
-		arc (true) goto END;
-	}
-	node S1a {
-		arc (#.0 == "medio" or #.0 == "cuarto") goto X3;
-	}
-	node S1b {
-		arc (true) goto END;
-	}
-
-	node END accept;
-}
+n = 0;
 
 def member (s, l) {
-	for (i = 0; i < l.length; i = i +1) {
-		if (s == l[i]) return true;
-	}
-	return false;
+    for (i = 0; i < l.length; i = i +1) {
+        if (s == l[i]) return true;
+    }
+    return false;
 }
 
 c = {"ciento","doscientos","trescientos","quatrocientos",
-	"quinientos","seiscientos","setecientos","ochocientos","novecientos"};
+    "quinientos","seiscientos","setecientos","ochocientos","novecientos"};
 
 d = {"diez","once","doce","trece","catorce","quince","dieciseis","diecisiete",
-	"dieciocho","diecinueve","veinte","veintiuno","veintidos","veintitres",
-	"veinticuatro","veinticinco","veintiseis","veitisiete","veintiocho","veintinueve",
-	"tenta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa"};
+    "dieciocho","diecinueve","veinte","veintiuno","veintidos","veintitres",
+    "veinticuatro","veinticinco","veintiseis","veitisiete","veintiocho","veintinueve",
+    "treinta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa"};
 
 u = {"uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"};
 
-def main() {
-	print atn(numbers), "%n";
+def translate(text) {
+    if (text == "ciento") return 100;
+    if (text == "doscientos") return 200;
+    if (text == "trescientos") return 300;
+    if (text == "quatrocientos") return 400;
+    if (text == "quinientos") return 500;
+    if (text == "seiscientos") return 600;
+    if (text == "setecientos") return 700;
+    if (text == "ochocientos") return 800;
+    if (text == "novecientos") return 900;
+    if (text == "diez") return 10; 
+    if (text == "once") return 11; 
+    if (text == "doce") return 12; 
+    if (text == "trece") return 13; 
+    if (text == "catorce") return 14; 
+    if (text == "quince") return 15; 
+    if (text == "dieciseis") return 16; 
+    if (text == "diecisiete") return 17; 
+    if (text == "dieciocho") return 18; 
+    if (text == "diecinueve") return 19; 
+    if (text == "veinte") return 20; 
+    if (text == "veintiuno") return 21; 
+    if (text == "veintidos") return 22; 
+    if (text == "veintitres") return 23; 
+    if (text == "veinticuatro") return 24; 
+    if (text == "veinticinco") return 25; 
+    if (text == "veintiseis") return 26; 
+    if (text == "veitisiete") return 27; 
+    if (text == "veintiocho") return 28; 
+    if (text == "veintinueve") return 29; 
+    if (text == "treinta") return 30; 
+    if (text == "cuarenta") return 40; 
+    if (text == "cincuenta") return 50; 
+    if (text == "sesenta") return 60; 
+    if (text == "setenta") return 70; 
+    if (text == "ochenta") return 80; 
+    if (text == "noventa") return 90;
+    if (text == "uno") return 1;
+    if (text == "dos") return 2;
+    if (text == "tres") return 3;
+    if (text == "cuatro") return 4;
+    if (text == "cinco") return 5;
+    if (text == "seis") return 6;
+    if (text == "siete") return 7;
+    if (text == "ocho") return 8;
+    if (text == "nueve") return 9;
 }
 
+atn numbers {
+
+    node B1 {
+        arc (member(#.0,c)) goto B2 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,u)) goto Bu {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto B3 {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "mil") goto B5 {
+            n = 1000;
+        }
+        arc (#.0 == "medio") goto X4;
+    }
+    node B2 {
+        arc (member(#.0,u)) goto Bu {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto B3 {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "mil") goto B5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node B3 {
+        arc (#.0 == "mil") goto B5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "y") goto B4;
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node B4 {
+        arc (member(#.0,u)) goto Bu {
+            n = n + translate(#.0);
+        }
+    }
+    node B5 {
+        arc (member(#.0,c)) goto B6 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,u)) goto B7 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto Bk {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node B6 {
+        arc (member(#.0,u)) goto B7 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto Bk {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1  {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node B7 {
+        arc (#.0 == "y") goto B4;
+        arc (#.0 == "billon" or #.0 == "billones") goto M1  {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1  {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node B8 {
+        arc (member(#.0,u)) goto B7;
+    }
+    node Bu {
+        arc (#.0 == "mil") goto B5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "decena" or #.0 == "decenas"
+            or #.0 == "docena" or #.0 == "docenas"
+            or #.0 == "centena" or #.0 == "centenas"
+            or #.0 == "millar" or #.0 == "millares"
+        ) goto X1 {
+            if (#.0 == "decena") n = n * 10;
+            if (#.0 == "decenas") n = n * 10;
+            if (#.0 == "docena") n = n * 12;
+            if (#.0 == "docenas") n = n * 12;
+            if (#.0 == "centena") n = n * 100;
+            if (#.0 == "centenas") n = n * 100;
+            if (#.0 == "millar") n = n * 1000;
+            if (#.0 == "millares") n = n * 1000;
+        }
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node Bk {
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+
+    node X1 {
+        arc (#.0 == "y") goto B4;
+        arc (true) goto END;
+    }
+    node X2 {
+        arc (#.0 == "medio" or #.0 == "cuarto") goto X3 {
+            if (#.0 == "medio") n = n / 2;
+            if (#.0 == "cuarto") n = n / 4;
+        }
+    }
+    node X3 {
+        arc (true) goto END;
+    }
+    node X4 {
+        arc (#.0 == "decena" or #.0 == "decenas"
+                or #.0 == "docena" or #.0 == "docenas"
+                or #.0 == "centena" or #.0 == "centenas"
+                or #.0 == "millar" or #.0 == "millares"
+            ) goto X1 {
+                if (#.0 == "decena") n = n * 10;
+                if (#.0 == "decenas") n = n * 10;
+                if (#.0 == "docena") n = n * 12;
+                if (#.0 == "docenas") n = n * 12;
+                if (#.0 == "centena") n = n * 100;
+                if (#.0 == "centenas") n = n * 100;
+                if (#.0 == "millar") n = n * 1000;
+                if (#.0 == "millares") n = n * 1000;
+            }
+        arc (#.0 == "billon" or #.0 == "billones") goto M1 {
+            n = n * 1000000000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+    }
+    node X5 {
+        arc (true) goto END;
+    }
+
+    node M1 {
+        arc (member(#.0,c)) goto M2 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,u)) goto Mu {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto M3 {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "mil") goto M5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "y") goto M1a;
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node M2 {
+        arc (member(#.0,u)) goto Mu {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto M3 {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "mil") goto M5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node M3 {
+        arc (#.0 == "mil") goto M5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "y") goto M4;
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node M4 {
+        arc (member(#.0,u)) goto Mu {
+            n = n + translate(#.0);
+        }
+    }
+    node M5 {
+        arc (member(#.0,c)) goto M6 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,u)) goto M7 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto Mk {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node M6 {
+        arc (member(#.0,u)) goto M7 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto Mk {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node M7 {
+        arc (#.0 == "y") goto M4;
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node M8 {
+        arc (member(#.0,u)) goto M7 {
+            n = n + translate(#.0);
+        }
+    }
+    node Mu {
+        arc (#.0 == "mil") goto M5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+        arc (true) goto END;
+    }
+    node Mk {
+        arc (true) goto END;
+        arc (#.0 == "millon" or #.0 == "millones") goto S1 {
+            n = n * 1000000;
+        }
+    }
+    node M1a {
+        arc (#.0 == "medio" or #.0 == "cuarto") goto X3 {
+            if (#.0 == "medio") n = n / 2; 
+            if (#.0 == "cuarto") n = n / 4;
+        }
+    }
+    node M1b {
+        arc (true) goto END;
+    }
+
+    node S1 {
+        arc (member(#.0,c)) goto S2 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,u)) goto Su {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto S3 {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "mil") goto S5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "y") goto S1a;
+        arc (true) goto END;
+    }
+    node S2 {
+        arc (member(#.0,u)) goto Su {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto S3 {
+            n = n + translate(#.0);
+        }
+        arc (#.0 == "mil") goto S5 {
+            n = n * 1000;
+        }
+        arc (true) goto END;
+    }
+    node S3 {
+        arc (#.0 == "mil") goto S5 {
+            n = n * 1000;
+        }
+        arc (#.0 == "y") goto S4;
+        arc (true) goto END;
+    }
+    node S4 {
+        arc (member(#.0,u)) goto Su {
+            n = n + translate(#.0);
+        }
+    }
+    node S5 {
+        arc (member(#.0,c)) goto S6 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,u)) goto S7 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto Sk {
+            n = n + translate(#.0);
+        }
+        arc (true) goto END;
+    }
+    node S6 {
+        arc (member(#.0,u)) goto S7 {
+            n = n + translate(#.0);
+        }
+        arc (member(#.0,d)) goto Sk {
+            n = n + translate(#.0);
+        }
+        arc (true) goto END;
+    }
+    node S7 {
+        arc (#.0 == "y") goto S4;
+        arc (true) goto END;
+    }
+    node S8 {
+        arc (member(#.0,u)) goto S7 {
+            n = n + translate(#.0);
+        }
+    }
+    node Su {
+        arc (#.0 == "mil") goto S5 {
+            n = n * 1000;
+        }
+        arc (true) goto END;
+    }
+    node Sk {
+        arc (true) goto END;
+    }
+    node S1a {
+        arc (#.0 == "medio" or #.0 == "cuarto") goto X3 {
+            if (#.0 == "medio") n = n / 2;
+            if (#.0 == "cuarto") n = n / 4;
+        }
+    }
+    node S1b {
+        arc (true) goto END;
+    }
+
+    node END accept;
+}
+
+def main() {
+    a = atn(numbers);
+    if (a) print "the parsed number is: ", n, "%n";
+    else print "no number has been found %n";
+}
