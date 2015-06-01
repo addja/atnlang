@@ -180,7 +180,12 @@ public class Interp {
     public int getParseIndex() { return parseIndex; }
 
     /** advences the parse index one position */
-    public void forwardParseIndex() { ++parseIndex; }
+    public void forwardParseIndex() {
+		++parseIndex;
+		if (parseIndex < inputToParse.size()
+			&& inputToParse.get(parseIndex).get(0) == null)
+			++parseIndex;
+	}
 
     /**
      * Executes a function.
