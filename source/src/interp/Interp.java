@@ -94,7 +94,7 @@ public class Interp {
     }
 
     public boolean textParsed() {
-        return parseIndex == inputToParse.size();
+        return parseIndex >= inputToParse.size();
     }
     
     /**
@@ -180,12 +180,7 @@ public class Interp {
     public int getParseIndex() { return parseIndex; }
 
     /** advences the parse index one position */
-    public void forwardParseIndex() {
-		++parseIndex;
-		if (parseIndex < inputToParse.size()
-			&& inputToParse.get(parseIndex).get(0) == null)
-			++parseIndex;
-	}
+    public void forwardParseIndex() {++parseIndex;}
 
     /**
      * Executes a function.
