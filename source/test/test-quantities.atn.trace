@@ -1,10 +1,10 @@
 main() <entry point>
-|   quantities() <line 61>
-|   |   isNumber(a=El) <line 31>
+|   quantities() <line 75>
+|   |   isNumber(a=El) <line 33>
 |   |   return true <line 14>
-|   |   member(s=gato, l=[km,m,s]) <line 34>
+|   |   member(s=gato, l=[km,m,s]) <line 38>
 |   |   return false <line 22>
-|   |   member(s=gato, l=[medio,tercio,cuarto]) <line 36>
+|   |   member(s=gato, l=[medio,tercio,cuarto]) <line 42>
 |   |   return false <line 22>
-|   return false <line 25>
-return <line 62>
+|   return false <line 34>
+return <line 76>

@@ -26,29 +26,41 @@ atn quantities {
 
 	unit = {"km","m","s"};
 	frag = {"medio","tercio","cuarto"};
+	
+	n = "";
 
 	node A {
-		arc (isNumber(#.0)) goto B;
+		arc (isNumber(#.0)) goto B {
+			n = #.0;
+		}
 	}
 	node B {
-		arc (member(#.0,unit)) goto G;
+		arc (member(#.0,unit)) goto G {
+			s = #.0;
+		} 
 		arc (#.0 == "por") goto D;
 		arc (#.0 == "%" or member(#.0,frag)) goto C;
 		arc (#.0 == "sobre") goto F;
 		arc (#.0 == "de") goto E;
 	}
 	node C {
-		arc (#.0 == "parte" or #.0 == "partes") goto C;
+		arc (#.0 == "parte" or #.0 == "partes") goto C {
+			s = "Fraction";	
+		}
 		arc (true) goto END;
 	}
 	node D {
-		arc(#.0 == "100" or #.0 == "1000") goto C;
+		arc(#.0 == "100" or #.0 == "1000") goto C {
+			s = "Percentage: " + n + " per " + #.0;
+		}
 	}
 	node E {
 		arc(#.0 == "cada") goto F;
 	}
 	node F {
-		arc(isNumber(#.0)) goto END;
+		arc(isNumber(#.0)) goto END {
+			s = "Fraction: " + n + " over " + #.0;
+		}
 	}
 	node G {
 		arc(true) goto END;
@@ -57,7 +69,10 @@ atn quantities {
 	node END accept;
 }
 
+s = "";
+
 def main() {
 	a = atn(quantities);
-	print a, "%n";
+	if (not a) print "Unit not detected. %n";
+	else print s, "%n";
 }
