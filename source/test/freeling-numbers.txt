@@ -1,11 +1,10 @@
-dos
-cientos
-mil
-ciento
+doscientos
 treinta
 y
 siete
-billones
+mil
 tres
 cientos
 cuatro
+
+200

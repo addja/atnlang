@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kate ./test/test-atnbacktrack.atn ./test/test-np.atn ./test/test-quantities.atn ./test/test-numbers.atn test/freeling* &
+kate ./test/test-atnbacktrack.atn ./test/test-np.atn ./test/test-quantities.atn ./test/test-numbers.atn test/freeling* ./atnSaless.atn &
 
 bin/ATN ./test/test-atnbacktrack.atn -parse test/freeling-backtrack.txt
 printf "\n\n\n"
@@ -11,7 +11,6 @@ bin/ATN ./atnSales.atn -parse test/freeling.txt
 printf "\n\n\n"
 read -n1 -r -p "Press a key to continue..." key
 printf "\n\n\n"
-
 
 bin/ATN ./test/test-np.atn -parse test/freeling-np.txt
 printf "\n\n\n"

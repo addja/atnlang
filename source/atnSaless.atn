@@ -23,6 +23,7 @@ atn findMoney {
         }
 
         arc (#.2 == "NP" and buy) goto END {
+            print name, " has bought ", #.0, "%n";
             buy = false;
             found = false;
         }
@@ -36,5 +37,5 @@ atn findMoney {
 
 
 def main() {
-    print "Facebook buys Whatsapp";
+    atn(findMoney);
 }
