@@ -1,0 +1,19 @@
+WhatsApp founders Brian Acton and Jan Koum at their headquarters in Mountain View. (Photo by Robert Gallagher for Forbes)
+
+Facebook says it has wrapped up its landmark $19 billion acquisition of WhatsApp, a deal that was hashed out in Mark Zuckerberg’s house over the course of a few days in February and sealed over a bottle of Jonnie Walker scotch.
+
+WhatsApp has continued to run its operation completely independently since then, but the closing of the deal marks the start of a gradual integration as Facebook gives the world’s biggest mobile messaging service legal and administrative support and — eventually, we can presume — finds new ways to monetize the company it spent more than Iceland’s GDP on.
+
+WhatsApp founders Jan Koum and Brian Acton became billionaires last February when Facebook announced it was buying the company they had started five years ago for a jaw-dropping $19 billion. Having mostly shunned venture capital investments till then the founders had kept large stakes. Koum still had around 45% at the time of the deal, leaving the Ukrainian-born immigrant to pocket $6.8 billion and former Yahoo Yahoo engineer Acton with $3.5 billion after taxes. WhatsApp founder Jan Koum now gets a seat on the Facebook board and will match Zuckerberg’s $1 salary.
+
+Facebook will now award 177.8 million shares of its Class A common stock and $4.59 billion in cash to WhatsApp’s shareholders, it said in an SEC filing over the weekend, plus 45.9 million shares (restricted stock units) to WhatsApp’s employees to complete the deal.
+
+Fortunately for those parties, the value of Facebook’s shares are now higher than they were when the deal was announced in February, notes Re/code’s Peter Kafka, making the deal worth around $21.8 billion.
+
+The acquisition has gone through a few regulatory hoops, but it passed the final one last Friday when the European Union gave it the green light.
+
+WhatsApp makes money by charging a $1 a year subscription in a handful of countries that have clear carrier billing systems and where credit card penetration is high, bringing in about $20 million in annual revenue, according to Forbes’ estimates. That’s not enough to justify a $19 billion price tag, so Facebook is almost certainly looking at other ways the messaging service could make money.
+
+WhatsApp is the most globally diverse messaging service, with more than 600 million monthly active users from Europe to South America to Asia, so some kind of money transfer service for the world’s increasingly globalized workforce might be one way.
+
+Facebook’s interest in the field of money transfer is well known. In April we reported that Facebook had been working since late 2013 on a European-wide money-transfer and storage service. Two months later it hired PayPal CEO David Marcus as head of the company’s “Messaging Products.” Then last week screenshots tweeted by a Stanford computer science student showed Facebook had already put elements of a payments infrastructure into place in Messenger for iOS, which had yet to be activated.

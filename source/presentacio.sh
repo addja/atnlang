@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kate ./test/test-atnbacktrack.atn ./test/test-np.atn ./test/test-quantities.atn ./test/test-numbers.atn test/freeling* ./atnSaless.atn &
+kate ./test/test-atnbacktrack.atn ./test/test-np.atn ./test/test-quantities.atn ./test/test-numbers.atn test/freeling* ./atnSaless.atn ./input.txt &
 
 bin/ATN ./test/test-atnbacktrack.atn -parse test/freeling-backtrack.txt
 printf "\n\n\n"
