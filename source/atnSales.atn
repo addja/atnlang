@@ -1,0 +1,41 @@
+def member (s, l) {
+    for (i = 0; i < l.length; i = i +1) {
+        if (s == l[i]) return true;
+    }
+    return false;
+}
+
+atn findMoney {
+    found = false;
+    buy = false;
+    name = "";
+    keywords = {"acquisition", "buy", "deal", "bargain", "purchase"};
+    
+    node sale {
+
+        arc (#.2 == "NP" and not buy) goto sale {
+            found = true;
+            name = #.0;
+        }
+
+        arc (member(#.1, keywords) and found) goto sale {
+            buy = true;
+        }
+
+        arc (#.2 == "NP" and buy) goto END {
+            print name, " has bought ", #.0, "%n";
+            buy = false;
+            found = false;
+        }
+
+        arc (true) goto sale;
+
+    }
+
+    node END accept;
+}
+
+
+def main() {
+    atn(findMoney);
+}
